@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
   <head>
-    <meta http-equiv="refresh" content="0; url=https://innovativesolutions.com.tr/countTool/" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="refresh" content="0; url=https://prod-162.westeurope.logic.azure.com/workflows/e1079ef513104d06a7e464080a904d9d/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=7XXGiW7POoZ3gh_10R_XLr4QNJd9HIXKWxWPevsFAVQ" />
     <title>Yönlendiriliyor...</title>
   </head>
   <body>
-    <p>Yönlendiriliyorsunuz... <a href="https://prod-162.westeurope.logic.azure.com/workflows/e1079ef513104d06a7e464080a904d9d/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=7XXGiW7POoZ3gh_10R_XLr4QNJd9HIXKWxWPevsFAVQ/">Buraya tıklayın</a></p>
   </body>
 </html>
