@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
   <title>Barkod Sayım</title>
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -11,6 +12,15 @@
   <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet">
 
   <style>
+
+    /* Sayfa başlığındaki ikon için stil */
+    .title-icon {
+      vertical-align: middle;
+      font-size: 1.2em;
+      margin-right: 5px;
+    }
+    
+    
     body {
       -webkit-user-select: none;
       -moz-user-select: none;
@@ -810,5 +820,22 @@ transform:"none",
     });
   });
 </script>
+
+<script>
+  // Sayfa başlığını güncelle (Boxicons QR ikonu ile)
+  const titleIcon = document.createElement('span');
+  titleIcon.className = 'title-icon bx bx-qr-scan';
+  titleIcon.style.fontFamily = "'boxicons'";
+  
+  const titleText = document.createTextNode(' Barkod Sayım');
+  
+  const titleElement = document.createElement('span');
+  titleElement.appendChild(titleIcon);
+  titleElement.appendChild(titleText);
+  
+  document.title = ''; // Önce başlığı temizle
+  document.querySelector('title').appendChild(titleElement)
+</script>
+  
 </body>
 </html>
