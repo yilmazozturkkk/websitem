@@ -1,9 +1,813 @@
 <!DOCTYPE html>
 <html lang="tr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="refresh" content="0; url=https://prod-162.westeurope.logic.azure.com/workflows/e1079ef513104d06a7e464080a904d9d/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=7XXGiW7POoZ3gh_10R_XLr4QNJd9HIXKWxWPevsFAVQ" />
-  </head>
-  <body>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Barkod Sayım</title>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #fff;
+      touch-action: manipulation;
+    }
+    header {
+      text-align: center;
+      font-size: 1rem;
+      padding: 0px;
+      background-color: transparent;
+    }
+    .container {
+      max-width: 100%;
+      padding: 10px;
+    }
+    #qr-reader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+    }
+    #qr-reader video {
+      width: 100% !important;
+      height: auto !important;
+      max-height: 100vh;
+      object-fit: contain;
+    }
+    .scanner-controls {
+      position: fixed;
+      top: 10px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      z-index: 1100;
+    }
+    .form-section {
+      margin-top: 15px;
+    }
+    .form-section .input-container {
+      position: relative;
+      width: 90%;
+      max-width: 400px;
+      margin: 15px auto;
+    }
+    .form-section input,
+    .form-section textarea {
+      padding: 12px;
+      padding-right: 30px;
+      margin: 4px 0;
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 1rem;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+    }
+    .form-section .clear-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: #ccc;
+      display: none;
+    }
+    .form-section input:not(:placeholder-shown) + .clear-btn,
+    .form-section textarea:not(:placeholder-shown) + .clear-btn {
+      display: block;
+    }
+    .form-section .radio-group {
+      display: flex;
+      justify-content: space-between;
+      margin: 4px 0;
+    }
+    .form-section .radio-group label {
+      flex: 1;
+      text-align: center;
+      padding: 8px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      font-size: 0.9rem;
+      user-select: none;
+    }
+    .form-section .radio-group input[type="radio"] {
+      display: none;
+    }
+    .form-section .radio-group input[type="radio"]:checked + label {
+      background-color: #ddd;
+      font-weight: bold;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.5rem;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 4px;
+      text-align: left;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+    .icon-btn {
+      background: transparent;
+      border: 0; 
+      border-radius: 0px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 44px;
+      height: 44px;
+      margin: 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #4682b4;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05); 
+    }
+    .warning {
+      color: red;
+      font-weight: bold;
+    }
+    .footer {
+      background-color: transparent;
+      padding: 5px;
+      text-align: center;
+    }
+    .social-icons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 5px;
+    }
+    .social-link {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #4682b4;
+      font-size: 22px;
+      text-decoration: none !important;
+      transition: background-color 0.3s, transform 0.3s ease-in-out, color 0.3s ease-in-out;
+    }
+    .social-link:hover {
+      background-color: #4682b4;
+      color: #fff;
+      transform: scale(1.15);
+    }
+    .social-link:hover i {
+      transform: rotate(-10deg) scale(1.3);
+    }
+    .social-link[href*="linkedin"]:hover {
+      background-color: #0077b5;
+    }
+    .social-link[href*="wa.me"]:hover {
+      background-color: #25D366;
+    }
+    .social-link[href*="teams"]:hover {
+      background-color: #6264A7;
+    }
+    .social-link[href*="mailto"]:hover {
+      background-color: #EA4335;
+    }
+    .social-link[href*="tel"]:hover {
+      background-color: #34B7F1;
+    }
+    .social-link[href*="innovexa.com.tr"]:hover {
+      background-color: #ff8c00;
+    }
+    .social-link[href*="logic.azure.com"]:hover {
+      background-color: #3b5998;
+    }
+    .footer-info p {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #6c757d;
+    }
+    .footer-logo img {
+      max-width: 300px;
+      max-height: 100px;
+      object-fit: contain;
+    }
+    .button-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin: 0px auto;
+      max-width: 400px;
+    }
+    .button-row button {
+      background: rgba(70, 130, 180, 0.1);
+      border: 1px solid rgba(70, 130, 180, 0.3);
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      margin: 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #4682b4;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .button-row button i {
+      font-size: 22px;
+    }
+    .button-row button:hover {
+      background-color: rgba(70, 130, 180, 0.2);
+    }
+    .auto-scan-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      margin-left: 10px;
+    }
+    .auto-scan-toggle label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      font-size: 14px;
+      color: #4682b4;
+    }
+    .auto-scan-toggle .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 20px;
+      margin-left: 5px;
+    }
+    .auto-scan-toggle .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .auto-scan-toggle .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: red;
+      transition: .4s;
+      border-radius: 20px;
+    }
+    .auto-scan-toggle .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    .auto-scan-toggle input:checked + .slider {
+      background-color: green;
+    }
+    .auto-scan-toggle input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+    .scanner-btn-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .scanner-btn {
+      background-color: #4682b4;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+    }
+    .scanner-btn:hover {
+      background-color: #3a6d99;
+      transform: scale(1.05);
+    }
+    .scanner-btn.active {
+      background-color: #ff4757;
+    }
+    .scanner-btn-text {
+      margin-top: 5px;
+      font-size: 14px;
+      color: #4682b4;
+      font-weight: bold;
+    }
+    @media (max-width: 600px) {
+      .form-section input, .form-section button, .form-section textarea {
+        font-size: 1rem;
+        padding: 10px;
+      }
+      table {
+        font-size: 0.5rem;
+      }
+      th, td {
+        padding: 4px;
+      }
+      .form-section input, .form-section button {
+        font-size: 0.5rem;
+      }
+      #qr-reader {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+      }
+      .button-row {
+        flex-wrap: wrap;
+      }
+      .auto-scan-toggle {
+        margin-left: 0;
+        margin-top: 5px;
+        width: 100%;
+        justify-content: flex-center;
+      }
+    }
+    .search-container {
+      display: flex;
+      justify-content: center;
+      position: relative;
+      width: 90%;
+      max-width: 400px;
+      margin: 10px auto;
+    }
+    #searchInput {
+      width: 100%;
+      padding: 8px;
+      padding-right: 30px;
+      box-sizing: border-box;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+    }
+    input, textarea {
+      font-size: 16px !important;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="scanner-btn-container">
+    <button id="toggleScannerBtn" onclick="toggleScanner()" class="scanner-btn" title="Kamerayı Başlat/Durdur">
+      <i id="toggleScannerIcon" class='bx bx-scan'></i>
+    </button>
+    <div id="scannerBtnText" class="scanner-btn-text">START</div>
+  </div>
+
+  <div id="qr-reader"></div>
+
+  <div class="form-section">
+    <div class="input-container">
+      <input type="text" id="barcodeInput" placeholder="Barkod" />
+      <button class="clear-btn" onclick="clearInput('barcodeInput')">×</button>
+    </div>
+    
+    <div class="input-container">
+      <input type="number" id="quantityInput" placeholder="Miktar" inputmode="numeric" />
+      <button class="clear-btn" onclick="clearInput('quantityInput')">×</button>
+    </div>
+    
+    <div class="input-container">
+      <input type="text" id="descriptionInput" placeholder="Açıklama" />
+      <button class="clear-btn" onclick="clearInput('descriptionInput')">×</button>
+    </div>
+    
+    <div class="radio-group">
+      <input type="radio" name="unit" id="dsp" value="DSP"/><label for="dsp">DSP</label>
+      <input type="radio" name="unit" id="ea" value="EA" checked /><label for="ea">EA</label>
+      <input type="radio" name="unit" id="cs" value="CS"/><label for="cs">CS</label>
+      <input type="radio" name="unit" id="pal" value="PAL"/><label for="pal">PAL</label>
+    </div>
+    
+    <div class="button-row">
+      <button onclick="saveRecord()" title="Kaydet"><i class='bx bx-save' ></i></button>
+      <button onclick="deleteAllRecords()" title="Tümünü Sil"><i class="bi bi-trash-fill"></i></button>
+      <button onclick="exportToExcel()" title="Export"><i class='bx bxs-download' ></i></button>
+      
+     
+    </div>
+  </div>
+
+ <div class="auto-scan-toggle">
+        <label>
+          Auto Scan
+          <div class="toggle-switch">
+            <input type="checkbox" id="autoCameraCheckbox" checked />
+            <span class="slider"></span>
+          </div>
+        </label>
+      </div>
+   <div class="form-section">
+  <div class="search-container">
+    <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="🔍 Tabloda Ara...">
+    <button class="clear-btn" onclick="clearSearch()">×</button>
+  </div>
+  </div>
+
+  <table id="recordsTable">
+    <thead>
+      <tr>
+        <th onclick="sortTable(0)">#</th>
+        <th onclick="sortTable(1)">Barkod</th>
+        <th onclick="sortTable(2)">Miktar</th>
+        <th onclick="sortTable(3)">Ölçü Birimi</th>
+        <th onclick="sortTable(4)">Açıklama</th>
+        <th onclick="sortTable(5)">Tarih/Saat</th>
+        <th onclick="sortTable(6)">Durum</th>
+        <th>İşlem</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="social-icons">
+      <a href="https://www.linkedin.com/company/innovexa-digital-solutions/" class="social-link"><i class='bx bxl-linkedin'></i></a>
+      <a href="https://www.innovexa.com.tr" class="social-link"><i class='bx bxl-edge'></i></a>
+      <a href="mailto:info@innovexa.com.tr" class="social-link"><i class='bx bx-mail-send'></i></a>
+      <a href="tel:05321330110" class="social-link"><i class='bx bxs-phone-call'></i></a>
+      <a href="https://teams.microsoft.com/l/chat/0/0?users=yilmaz.ozturk@innovexa.com.tr" class="social-link"><i class='bx bxl-microsoft-teams'></i></a>
+      <a href="https://wa.me/+905321330110?text=Merhaba!%20INNOVEXA%20olarak%20yenilikçi%20ve%20hızlı%20çözümler%20sunuyoruz.%20Size%20nasıl%20yardımcı%20olabiliriz?" class="social-link"><i class='bx bxl-whatsapp'></i></a>
+      <a href="https://prod-14.westeurope.logic.azure.com/workflows/7caebada195e47c79621a15c024ebbda/triggers/manual/paths/invoke?api-version=2016-06-01&amp;sp=%2Ftriggers%2Fmanual%2Frun&amp;sv=1.0&amp;sig=m8d6rY1u4cvC_99VLDimkuF4MypWXxvZ9mrb0BrXd6w" class="social-link"><i class='bx bx-id-card'></i></a>
+    </div>
+
+    <div class="footer-info">
+     <p>Bu araç, <a href="https://www.innovativesolutions.com.tr" target="_blank"><strong>Yılmaz Öztürk</strong></a> tarafından geliştirilmiştir. &copy; <span id="year"></span></p>
+
+    </div>
+    <div class="footer-logo">
+      
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Yıl bilgisini otomatik ekle
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Beep sesi seçenekleri
+  const beepSounds = [
+    new Audio("https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3"),
+    new Audio("https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3"),
+    new Audio("https://assets.mixkit.co/sfx/preview/mixkit-positive-interface-beep-221.mp3"),
+    new Audio("https://assets.mixkit.co/sfx/preview/mixkit-retro-arcade-casino-notification-211.mp3")
+  ];
+  
+  // Varsayılan olarak ilk sesi seç
+  let currentBeepSound = beepSounds[0];
+
+  function playSound() {
+    currentBeepSound.currentTime = 0;
+    currentBeepSound.play().catch(e => console.warn("Ses çalma engellendi", e));
+  }
+
+  let records = JSON.parse(localStorage.getItem("barcodeRecords")) || [];
+  let editIndex = -1;
+  let scannerActive = false;
+  let html5QrCode;
+  let autoCameraEnabled = localStorage.getItem("autoCameraEnabled") !== "false";
+
+  // Sayfa yüklendiğinde ayarları yükle
+  document.addEventListener('DOMContentLoaded', () => {
+    displayRecords();
+    document.getElementById("quantityInput").setAttribute("inputmode", "numeric");
+    document.getElementById("autoCameraCheckbox").checked = autoCameraEnabled;
+  });
+
+  // Input temizleme fonksiyonu
+  function clearInput(inputId) {
+    document.getElementById(inputId).value = "";
+    document.getElementById(inputId).focus();
+  }
+
+  // Otomatik kamera ayarını değiştir
+  document.getElementById("autoCameraCheckbox").addEventListener('change', function() {
+    autoCameraEnabled = this.checked;
+    localStorage.setItem("autoCameraEnabled", autoCameraEnabled);
+  });
+
+  // Kamera tarayıcısını açıp kapatan fonksiyon
+  async function toggleScanner() {
+    const qrRegionId = "qr-reader";
+    const toggleBtn = document.getElementById("toggleScannerBtn");
+    const toggleIcon = document.getElementById("toggleScannerIcon");
+    const scannerText = document.getElementById("scannerBtnText");
+
+    if (!scannerActive) {
+      html5QrCode = new Html5Qrcode(qrRegionId);
+      
+      const config = {
+        fps: 15,
+        qrbox: { width: 300, height: 300 },
+        aspectRatio: 1.333,
+        supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
+        formatsToSupport: [
+          Html5QrcodeSupportedFormats.UPC_A,
+  Html5QrcodeSupportedFormats.UPC_E,
+  Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION,
+  Html5QrcodeSupportedFormats.EAN_8,
+  Html5QrcodeSupportedFormats.EAN_13,
+  Html5QrcodeSupportedFormats.CODE_39,
+  Html5QrcodeSupportedFormats.CODE_93,
+  Html5QrcodeSupportedFormats.CODE_128,
+  Html5QrcodeSupportedFormats.CODABAR,
+  Html5QrcodeSupportedFormats.ITF,
+  Html5QrcodeSupportedFormats.ITF_14,
+  Html5QrcodeSupportedFormats.MSI,
+  Html5QrcodeSupportedFormats.PLESSEY,
+  Html5QrcodeSupportedFormats.QR_CODE,
+  Html5QrcodeSupportedFormats.DATA_MATRIX,
+  Html5QrcodeSupportedFormats.AZTEC,
+  Html5QrcodeSupportedFormats.PDF_417,
+  Html5QrcodeSupportedFormats.MAXICODE,
+  Html5QrcodeSupportedFormats.RSS_14,
+  Html5QrcodeSupportedFormats.RSS_EXPANDED,
+  Html5QrcodeSupportedFormats.JAN,
+  Html5QrcodeSupportedFormats.IATA_2OF5        ],
+        videoConstraints: {
+          facingMode: "environment",
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
+          focusMode: "continuous",
+transform:"none",
+          advanced: [
+{ zoom: 2.5 }, // Başlangıç zoom seviyesi
+          { torch: false } // Fener başlangıçta kapalı
+ ]
+        }
+      };
+
+      try {
+        document.getElementById(qrRegionId).style.display = "block";
+        await html5QrCode.start(
+          { facingMode: "environment" },
+          config,
+          (decodedText) => {
+            document.getElementById("barcodeInput").value = decodedText;
+            playSound();
+            stopScanner();
+          },
+          (errorMessage) => {
+            console.log("QR Code error:", errorMessage);
+          }
+        );
+        scannerActive = true;
+        toggleBtn.classList.add("active");
+        toggleIcon.className = 'bx bx-stop-circle';
+        scannerText.textContent = "STOP";
+        toggleBtn.title = "Kamerayı Durdur";
+      } catch (err) {
+        console.error("Kamera başlatılamadı:", err);
+        document.getElementById(qrRegionId).style.display = "none";
+      }
+    } else {
+      await stopScanner();
+    }
+  }
+
+  // Tarayıcıyı durdur
+  async function stopScanner() {
+    if (html5QrCode) {
+      await html5QrCode.stop();
+      document.getElementById("qr-reader").style.display = "none";
+      scannerActive = false;
+      const toggleBtn = document.getElementById("toggleScannerBtn");
+      const toggleIcon = document.getElementById("toggleScannerIcon");
+      const scannerText = document.getElementById("scannerBtnText");
+      
+      toggleBtn.classList.remove("active");
+      toggleIcon.className = 'bx bx-scan';
+      scannerText.textContent = "START";
+      document.getElementById("toggleScannerBtn").title = "Kamerayı Başlat";
+    }
+  }
+
+  // Kayıt ekleme/düzenleme fonksiyonu
+  function saveRecord() {
+    const barcode = document.getElementById("barcodeInput").value.trim();
+    const quantity = document.getElementById("quantityInput").value.trim();
+    const unit = document.querySelector("input[name='unit']:checked")?.value || "";
+    const description = document.getElementById("descriptionInput").value.trim();
+
+    if (!barcode || !quantity) {
+      alert("Barkod ve miktar zorunludur.");
+      return;
+    }
+
+    const now = new Date();
+    const datetime = now.toLocaleString("tr-TR");
+
+    const existingIndex = records.findIndex(r => r.barcode === barcode);
+    let status = existingIndex >= 0 ? "Tekrar" : "Yeni";
+    if (editIndex >= 0) status = "Düzeltildi";
+
+    const record = { barcode, quantity, unit, description, datetime, status };
+
+    if (editIndex >= 0) {
+      records[editIndex] = record;
+      editIndex = -1;
+    } else {
+      records.push(record);
+    }
+
+    localStorage.setItem("barcodeRecords", JSON.stringify(records));
+    displayRecords();
+
+    // Alanları temizle
+    document.getElementById("barcodeInput").value = "";
+    document.getElementById("quantityInput").value = "";
+    document.getElementById("ea").checked = true;
+    document.getElementById("descriptionInput").value = "";
+
+    // Eğer otomatik kamera açık ise tarayıcıyı yeniden başlat
+    if (autoCameraEnabled) {
+      setTimeout(() => {
+        toggleScanner();
+      }, 300);
+    }
+  }
+
+  // Kayıtları tabloda göster
+  function displayRecords() {
+    const tbody = document.querySelector("#recordsTable tbody");
+    tbody.innerHTML = "";
+    records.forEach((r, i) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${i + 1}</td>
+        <td>${r.barcode}</td>
+        <td>${r.quantity}</td>
+        <td>${r.unit}</td>
+        <td>${r.description}</td>
+        <td>${r.datetime || ""}</td>
+        <td class="${r.status === 'Tekrar' ? 'warning' : ''}">${r.status}</td>
+        <td>
+          <button class="icon-btn" onclick="editRecord(${i})" title="Düzenle"><i class="bi bi-pencil-square"></i></button>
+          <button class="icon-btn" onclick="deleteRecord(${i})" title="Sil"><i class="bi bi-trash-fill"></i></button>
+        </td>`;
+      tbody.appendChild(row);
+    });
+  }
+
+  // Kayıt düzenle
+  function editRecord(index) {
+    const r = records[index];
+    document.getElementById("barcodeInput").value = r.barcode;
+    document.getElementById("quantityInput").value = r.quantity;
+    document.querySelectorAll("input[name='unit']").forEach(input => {
+      input.checked = input.value === r.unit;
+    });
+    document.getElementById("descriptionInput").value = r.description;
+    editIndex = index;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Tüm kayıtları sil
+  function deleteAllRecords() {
+    if (confirm("Tüm kayıtlar silinsin mi?")) {
+      records = [];
+      localStorage.removeItem("barcodeRecords");
+      displayRecords();
+    }
+  }
+
+  // Tek kayıt sil
+  function deleteRecord(index) {
+    if (confirm("Bu kaydı silmek istiyor musunuz?")) {
+      records.splice(index, 1);
+      localStorage.setItem("barcodeRecords", JSON.stringify(records));
+      displayRecords();
+    }
+  }
+
+  // Excel'e aktar
+  function exportToExcel() {
+    const exportData = records.map((r, i) => ({
+      "Sıra": i + 1,
+      "Barkod": r.barcode,
+      "Miktar": r.quantity,
+      "Ölçü Birimi": r.unit,
+      "Açıklama": r.description,
+      "Tarih/Saat": r.datetime || "",
+      "Durum": r.status
+    }));
+    
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Barkodlar");
+    XLSX.writeFile(workbook, "barkod_kayitlari.xlsx");
+  }
+
+  // Tablo sıralama
+  let sortOrder = {
+    0: 'asc', 1: 'asc', 2: 'asc', 3: 'asc', 4: 'asc', 5: 'asc', 6: 'asc'
+  };
+
+  function sortTable(column) {
+    const tbody = document.querySelector("#recordsTable tbody");
+    const rows = Array.from(tbody.rows);
+    const order = sortOrder[column] === 'asc' ? 1 : -1;
+
+    rows.sort((a, b) => {
+      const cellA = a.cells[column].innerText.trim();
+      const cellB = b.cells[column].innerText.trim();
+
+      if (column === 1 || column === 2 || column === 4) {
+        return (cellA > cellB ? 1 : -1) * order;
+      } else if (column === 5) {
+        return (new Date(cellA) - new Date(cellB)) * order;
+      } else {
+        return (cellA > cellB ? 1 : -1) * order;
+      }
+    });
+
+    sortOrder[column] = sortOrder[column] === 'asc' ? 'desc' : 'asc';
+    tbody.innerHTML = '';
+    rows.forEach(row => tbody.appendChild(row));
+  }
+
+  // Tablo arama
+  function searchTable() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('#recordsTable tbody tr');
+    rows.forEach(row => {
+      const cells = row.getElementsByTagName('td');
+      let match = false;
+      for (let i = 0; i < cells.length; i++) {
+        if (cells[i].textContent.toLowerCase().includes(query)) {
+          match = true;
+          break;
+        }
+      }
+      row.style.display = match ? '' : 'none';
+    });
+  }
+
+  // Arama temizle
+  function clearSearch() {
+    document.getElementById("searchInput").value = "";
+    searchTable();
+  }
+
+  // Geliştirici araçlarını engelle
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('keydown', e => {
+    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I', 'C', 'J'].includes(e.key.toUpperCase()))) {
+      e.preventDefault();
+    }
+  });
+
+  // Ekran büyümesini engellemek için
+  document.addEventListener('touchmove', function(e) {
+    if(e.scale !== 1) { e.preventDefault(); }
+  }, { passive: false });
+
+  // Input alanlarına odaklanıldığında sayfanın büyümesini engelle
+  document.querySelectorAll('input').forEach(input => {
+    input.addEventListener('focus', function() {
+      window.scrollTo(0, 0);
+      document.body.style.zoom = "1.0";
+    });
+  });
+</script>
+</body>
 </html>
