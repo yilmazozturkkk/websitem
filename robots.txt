@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://innovativesolutions.com.tr/sitemap.xml
