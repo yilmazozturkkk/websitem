@@ -951,6 +951,8 @@ async function sendMail() {
     
     const sendBtn = document.querySelector('.mail-send-btn');
     const originalText = sendBtn.innerHTML;
+    sendBtn.innerHTML = '<i class="bx bx-loader bx-spin"></i> Gönderiliyor...';
+    sendBtn.disabled = true;
     
     try {
         // Excel dosyasını oluştur
@@ -978,11 +980,8 @@ async function sendMail() {
         }
         const excelBase64 = btoa(binaryString);
         
-        // Power Automate endpoint
-        const powerAutomateUrl = "https://prod-107.westeurope.logic.azure.com:443/workflows/d1cddc96e3a8441d814c1751c0fdad23/triggers/manual/paths/invoke?api-version=2016-06-01";
-        
-        sendBtn.innerHTML = '<i class="bx bx-loader bx-spin"></i> Gönderiliyor...';
-        sendBtn.disabled = true;
+        // Power Automate endpoint - Referans kodunuzdaki URL'yi kullanıyorum
+        const powerAutomateUrl = "https://prod-24.northeurope.logic.azure.com/workflows/9e9f4cb55dc24c11821f34c524984260/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=UZ0apiKLbv9r1kXZFgADyjBzrfiPwdQc4NcitmQ-7dA";
         
         const response = await fetch(powerAutomateUrl, {
             method: 'POST',
@@ -1009,11 +1008,14 @@ async function sendMail() {
         console.error("Mail gönderme hatası:", error);
         alert(`E-posta gönderilirken bir hata oluştu:\n${error.message}`);
     } finally {
-        sendBtn.innerHTML = originalText;
-        sendBtn.disabled = false;
+        const sendBtn = document.querySelector('.mail-send-btn');
+        if(sendBtn) {
+            sendBtn.innerHTML = originalText;
+            sendBtn.disabled = false;
+        }
     }
 }
-
+    
   
 </script>
 
