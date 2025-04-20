@@ -931,16 +931,6 @@ transform:"none",
     }
     
     document.getElementById('mailPopup').style.display = 'flex';
-    document.getElementById('mailSubject').value = 'Barkod Sayım Raporu - ' + new Date().toLocaleDateString('tr-TR');
-  }
-  
-  // Mail popup'ını gizle
-  function hideMailPopup() {
-    document.getElementById('mailPopup').style.display = 'none';
-  }
-
-
-
   async function sendMail() {
     const mailTo = document.getElementById('mailTo').value.trim();
     const mailSubject = document.getElementById('mailSubject').value.trim();
@@ -973,7 +963,7 @@ transform:"none",
         // Base64'e çevir
         const excelBase64 = btoa(String.fromCharCode.apply(null, excelBinary));
         
-        // Power Automate endpoint
+        // Power Automate endpoint - BU KISMI KENDİ AKIŞ URL'NİZLE DEĞİŞTİRİN
         const powerAutomateUrl = "https://prod-107.westeurope.logic.azure.com:443/workflows/d1cddc96e3a8441d814c1751c0fdad23/triggers/manual/paths/invoke?api-version=2016-06-01";
         
         // Gösterge ekleyin
