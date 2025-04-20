@@ -19,7 +19,7 @@
       -moz-user-select: none;
       -ms-user-select: none;
       user-select: none;
-      font-family: Arial, sans-serif;
+      font-family: Poppins, sans-serif;
       margin: 0;
       padding: 0;
       background: #fff;
@@ -51,14 +51,7 @@
       max-height: 100vh;
       object-fit: contain;
     }
-    .scanner-controls {
-      position: fixed;
-      top: 10px;
-      left: 0;
-      right: 0;
-      text-align: center;
-      z-index: 1100;
-    }
+    
     .form-section {
       margin-top: 15px;
     }
@@ -117,35 +110,92 @@
       background-color: #ddd;
       font-weight: bold;
     }
+    
+    /* TABLO STİLLERİ */
     table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.5rem;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 4px;
-      text-align: left;
-    }
-    th {
-      background-color: #f0f0f0;
-    }
-    .icon-btn {
-      background: transparent;
-      border: 0; 
-      border-radius: 0px;
-      font-size: 16px;
-      cursor: pointer;
-      width: 44px;
-      height: 44px;
-      margin: 2px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: #4682b4;
-      transition: all 0.2s ease;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05); 
-    }
+    overflow: hidden; /* Köşe yuvarlaklığı için */
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    margin-top: 15px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #e0e0e0; /* Tablo dış çerçevesi */
+  }
+  
+  th, td {
+    padding: 8px 10px;
+    border-right: 1px solid #e0e0e0; /* Dikey çizgiler */
+    border-bottom: 1px solid #e0e0e0; /* Yatay çizgiler */
+  }
+  
+  th {
+    background-color: #4682b4;
+    color: white;
+    text-align: left;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 2px solid #3a6d99; /* Başlık alt çizgisi daha kalın */
+  }
+  
+  /* Son sütundaki dikey çizgiyi kaldırma */
+  th:last-child, td:last-child {
+    border-right: none;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f8f9fa;
+  }
+  
+  tr:hover {
+    background-color: #e9f5ff;
+  }
+  /* İŞLEM BUTONLARI */
+  .action-buttons {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  align-items: center;
+  min-width: 80px;
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4682b4;
+  transition: all 0.2s ease;
+}
+
+.icon-btn:hover {
+  background-color: rgba(70, 130, 180, 0.1);
+  transform: scale(1.1);
+}
+
+@media (max-width: 600px) {
+  .action-buttons {
+    flex-direction: row; /* Küçük ekranda da yatay kalsın */
+    gap: 2px; /* Daha az boşluk */
+  }
+  
+  .icon-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+}
+  
+  /* Tablo hücrelerini ortala */
+  td {
+    vertical-align: middle;
+  }   
+    
     .warning {
       color: red;
       font-weight: bold;
@@ -209,11 +259,7 @@
       font-size: 14px;
       color: #6c757d;
     }
-    .footer-logo img {
-      max-width: 300px;
-      max-height: 100px;
-      object-fit: contain;
-    }
+    
     .button-row {
       display: flex;
       justify-content: center;
@@ -341,7 +387,7 @@
         font-size: 0.5rem;
       }
       th, td {
-        padding: 4px;
+        padding: 2px;
       }
       .form-section input, .form-section button {
         font-size: 0.5rem;
@@ -530,6 +576,44 @@
             }
         }
     
+    /* RADIO BUTON STİLLERİ */
+    .radio-group {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+      gap: 25px;
+    }
+    
+    .radio-group label {
+      flex: 1;
+      text-align: center;
+      padding: 10px 5px;
+      border: 2px solid #4682b4;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      user-select: none;
+      transition: all 0.3s ease;
+      background-color: #f8f9fa;
+      color: #4682b4;
+    }
+    
+    .radio-group input[type="radio"] {
+      display: none;
+    }
+    
+    .radio-group input[type="radio"]:checked + label {
+      background-color: #4682b4;
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 2px 5px rgba(70, 130, 180, 0.3);
+    }
+    /* Scroll çubuğu stil */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+    
   </style>
 </head>
 <body>
@@ -667,9 +751,7 @@
      <p>Bu araç, <a href="https://www.innovativesolutions.com.tr" target="_blank"><strong>Yılmaz Öztürk</strong></a> tarafından geliştirilmiştir. &copy; <span id="year"></span></p>
 
     </div>
-    <div class="footer-logo">
-      
-    </div>
+    
   </div>
 </footer>
 
@@ -873,10 +955,14 @@ transform:"none",
         <td>${r.description}</td>
         <td>${r.datetime || ""}</td>
         <td class="${r.status === 'Tekrar' ? 'warning' : ''}">${r.status}</td>
-        <td>
-          <button class="icon-btn" onclick="editRecord(${i})" title="Düzenle"><i class="bi bi-pencil-square"></i></button>
-          <button class="icon-btn" onclick="deleteRecord(${i})" title="Sil"><i class="bi bi-trash-fill"></i></button>
-        </td>`;
+        <td class="action-buttons">
+    <button class="icon-btn" onclick="editRecord(${i})" title="Düzenle">
+      <i class="bi bi-pencil-square"></i>
+    </button>
+    <button class="icon-btn" onclick="deleteRecord(${i})" title="Sil">
+      <i class="bi bi-trash-fill"></i>
+    </button>
+  </td>`;
       tbody.appendChild(row);
     });
   }
