@@ -922,6 +922,23 @@ transform:"none",
 
   
   // Mail popup'ını göster
+  function showMailPopup() {
+    if(records.length === 0) {
+      alert("Gönderilecek kayıt bulunamadı!");
+      return;
+    }
+    
+    document.getElementById('mailPopup').style.display = 'flex';
+    document.getElementById('mailSubject').value = 'Barkod Sayım Raporu - ' + new Date().toLocaleDateString('tr-TR');
+  }
+  
+  // Mail popup'ını gizle
+  function hideMailPopup() {
+    document.getElementById('mailPopup').style.display = 'none';
+  }
+
+
+
   async function sendMail() {
     const mailTo = document.getElementById('mailTo').value.trim();
     const mailSubject = document.getElementById('mailSubject').value.trim();
