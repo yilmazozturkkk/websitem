@@ -922,79 +922,77 @@ transform:"none",
 
   
   // Mail popup'ını göster
-  function showMailPopup() {
-    if(records.length === 0) {
-      alert("Gönderilecek kayıt bulunamadı!");
-      return;
-    }
-    
-    document.getElementById('mailPopup').style.display = 'flex';
-    document.getElementById('mailSubject').value = 'Barkod Sayım Raporu - ' + new Date().toLocaleDateString('tr-TR');
-  }
-  
-  // Mail popup'ını gizle
-  function hideMailPopup() {
-    document.getElementById('mailPopup').style.display = 'none';
-  }
-  
-  // Mail gönderme fonksiyonu
   async function sendMail() {
     const mailTo = document.getElementById('mailTo').value.trim();
     const mailSubject = document.getElementById('mailSubject').value.trim();
     const mailBody = document.getElementById('mailBody').value.trim();
     
     if(!mailTo) {
-      alert("Lütfen alıcı e-posta adresini giriniz!");
-      return;
+        alert("Lütfen alıcı e-posta adresini giriniz!");
+        return;
     }
-    
-    // Excel dosyasını oluştur
-    const exportData = records.map((r, i) => ({
-      "Sıra": i + 1,
-      "Barkod": r.barcode,
-      "Miktar": r.quantity,
-      "Ölçü Birimi": r.unit,
-      "Açıklama": r.description,
-      "Tarih/Saat": r.datetime || "",
-      "Durum": r.status
-    }));
-    
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Barkodlar");
-    const excelFile = XLSX.write(workbook, { bookType: 'xlsx', type: 'base64' });
     
     try {
-      // Power Automate endpoint'inizi buraya ekleyin
-      const powerAutomateUrl = "https://prod-107.westeurope.logic.azure.com:443/workflows/d1cddc96e3a8441d814c1751c0fdad23/triggers/manual/paths/invoke?api-version=2016-06-01";
-      
-      const response = await fetch(powerAutomateUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          to: mailTo,
-          subject: mailSubject,
-          body: mailBody,
-          filename: "barkod_sayim_raporu.xlsx",
-          filecontent: excelFile
-        })
-      });
-      
-      if(response.ok) {
-        alert("E-posta başarıyla gönderildi!");
-        hideMailPopup();
-      } else {
-        throw new Error("Mail gönderilemedi");
-      }
+        // Excel dosyasını oluştur
+        const exportData = records.map((r, i) => ({
+            "Sıra": i + 1,
+            "Barkod": r.barcode,
+            "Miktar": r.quantity,
+            "Ölçü Birimi": r.unit,
+            "Açıklama": r.description,
+            "Tarih/Saat": r.datetime || "",
+            "Durum": r.status
+        }));
+        
+        const worksheet = XLSX.utils.json_to_sheet(exportData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Barkodlar");
+        
+        // Excel dosyasını binary olarak al
+        const excelBinary = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+        
+        // Base64'e çevir
+        const excelBase64 = btoa(String.fromCharCode.apply(null, excelBinary));
+        
+        // Power Automate endpoint
+        const powerAutomateUrl = "YENI_AKIS_URL_NIZ";
+        
+        // Gösterge ekleyin
+        const sendBtn = document.querySelector('.mail-send-btn');
+        const originalText = sendBtn.innerHTML;
+        sendBtn.innerHTML = '<i class="bx bx-loader bx-spin"></i> Gönderiliyor...';
+        sendBtn.disabled = true;
+        
+        const response = await fetch(powerAutomateUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                to: mailTo,
+                subject: mailSubject,
+                body: mailBody,
+                filename: `barkod_sayim_raporu_${new Date().toISOString().slice(0,10)}.xlsx`,
+                filecontent: excelBase64
+            })
+        });
+        
+        if(response.ok) {
+            alert("E-posta başarıyla gönderildi!");
+            hideMailPopup();
+        } else {
+            throw new Error("Mail gönderilemedi");
+        }
     } catch (error) {
-      console.error("Mail gönderme hatası:", error);
-      alert("E-posta gönderilirken bir hata oluştu: " + error.message);
+        console.error("Mail gönderme hatası:", error);
+        alert(`E-posta gönderilirken bir hata oluştu:\n${error.message}`);
+    } finally {
+        if(sendBtn) {
+            sendBtn.innerHTML = originalText;
+            sendBtn.disabled = false;
+        }
     }
-  }
-
-
+}
   
 </script>
 
