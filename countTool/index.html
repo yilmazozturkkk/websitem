@@ -975,8 +975,9 @@ transform:"none",
         const response = await fetch(powerAutomateUrl, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
-            },
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*' 
+},
             body: JSON.stringify({
                 to: mailTo,
                 subject: mailSubject,
