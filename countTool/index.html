@@ -981,7 +981,7 @@ async function sendMail() {
         const excelBase64 = btoa(binaryString);
         
         // Power Automate endpoint - Referans kodunuzdaki URL'yi kullanıyorum
-        const powerAutomateUrl = "https://prod-24.northeurope.logic.azure.com/workflows/9e9f4cb55dc24c11821f34c524984260/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=UZ0apiKLbv9r1kXZFgADyjBzrfiPwdQc4NcitmQ-7dA";
+        const powerAutomateUrl = "https://prod-107.westeurope.logic.azure.com:443/workflows/d1cddc96e3a8441d814c1751c0fdad23/triggers/manual/paths/invoke?api-version=2016-06-01";
         
         const response = await fetch(powerAutomateUrl, {
             method: 'POST',
