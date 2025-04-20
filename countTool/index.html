@@ -966,8 +966,10 @@ async function sendMail() {
         
         // Excel dosyasını binary olarak al
         const excelBinary = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-        
-        // Base64'e çevir
+        const worksheet = XLSX.utils.json_to_sheet(exportData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Barkodlar");
+        const excelBinary = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
         const excelBase64 = btoa(String.fromCharCode.apply(null, excelBinary));
         
         // Power Automate endpoint - BU KISMI KENDİ AKIŞ URL'NİZLE DEĞİŞTİRİN
