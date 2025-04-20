@@ -383,6 +383,85 @@
     input, textarea {
       font-size: 16px !important;
     }
+
+  /* Mail gönder popup stili */
+    .mail-popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .mail-popup-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    
+    .mail-popup h3 {
+      margin-top: 0;
+      color: #4682b4;
+    }
+    
+    .mail-form-group {
+      margin-bottom: 15px;
+    }
+    
+    .mail-form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    
+    .mail-form-group input,
+    .mail-form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    
+    .mail-form-group textarea {
+      min-height: 100px;
+    }
+    
+    .mail-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .mail-buttons button {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 14px;
+    }
+    
+    .mail-send-btn {
+      background-color: #4682b4;
+      color: white;
+    }
+    
+    .mail-cancel-btn {
+      background-color: #f0f0f0;
+      color: #333;
+    }
   </style>
 </head>
 <body>
@@ -424,7 +503,7 @@
       <button onclick="saveRecord()" title="Kaydet"><i class='bx bx-save' ></i></button>
       <button onclick="deleteAllRecords()" title="Tümünü Sil"><i class="bi bi-trash-fill"></i></button>
       <button onclick="exportToExcel()" title="Export"><i class='bx bxs-download' ></i></button>
-      
+       <button onclick="showMailPopup()" title="Mail Gönder"><i class='bx bx-mail-send'></i></button>
      
     </div>
   </div>
@@ -444,7 +523,34 @@
     <button class="clear-btn" onclick="clearSearch()">×</button>
   </div>
   </div>
-
+<!-- Mail Gönder Popup Formu -->
+<div id="mailPopup" class="mail-popup">
+  <div class="mail-popup-content">
+    <h3><i class='bx bx-mail-send'></i> Excel Dosyasını Gönder</h3>
+    <form id="mailForm">
+      <div class="mail-form-group">
+        <label for="mailTo">Kime:</label>
+        <input type="email" id="mailTo" required placeholder="alici@ornek.com">
+      </div>
+      <div class="mail-form-group">
+        <label for="mailSubject">Konu:</label>
+        <input type="text" id="mailSubject" required placeholder="Barkod Sayım Raporu">
+      </div>
+      <div class="mail-form-group">
+        <label for="mailBody">Açıklama:</label>
+        <textarea id="mailBody" placeholder="Ekte barkod sayım raporu bulunmaktadır."></textarea>
+      </div>
+      <div class="mail-buttons">
+        <button type="button" onclick="hideMailPopup()" class="mail-cancel-btn">
+          <i class='bx bx-x'></i> Vazgeç
+        </button>
+        <button type="button" onclick="sendMail()" class="mail-send-btn">
+          <i class='bx bx-send'></i> Gönder
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
   <table id="recordsTable">
     <thead>
       <tr>
@@ -812,6 +918,84 @@ transform:"none",
       document.body.style.zoom = "1.0";
     });
   });
+
+
+  
+  // Mail popup'ını göster
+  function showMailPopup() {
+    if(records.length === 0) {
+      alert("Gönderilecek kayıt bulunamadı!");
+      return;
+    }
+    
+    document.getElementById('mailPopup').style.display = 'flex';
+    document.getElementById('mailSubject').value = 'Barkod Sayım Raporu - ' + new Date().toLocaleDateString('tr-TR');
+  }
+  
+  // Mail popup'ını gizle
+  function hideMailPopup() {
+    document.getElementById('mailPopup').style.display = 'none';
+  }
+  
+  // Mail gönderme fonksiyonu
+  async function sendMail() {
+    const mailTo = document.getElementById('mailTo').value.trim();
+    const mailSubject = document.getElementById('mailSubject').value.trim();
+    const mailBody = document.getElementById('mailBody').value.trim();
+    
+    if(!mailTo) {
+      alert("Lütfen alıcı e-posta adresini giriniz!");
+      return;
+    }
+    
+    // Excel dosyasını oluştur
+    const exportData = records.map((r, i) => ({
+      "Sıra": i + 1,
+      "Barkod": r.barcode,
+      "Miktar": r.quantity,
+      "Ölçü Birimi": r.unit,
+      "Açıklama": r.description,
+      "Tarih/Saat": r.datetime || "",
+      "Durum": r.status
+    }));
+    
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Barkodlar");
+    const excelFile = XLSX.write(workbook, { bookType: 'xlsx', type: 'base64' });
+    
+    try {
+      // Power Automate endpoint'inizi buraya ekleyin
+      const powerAutomateUrl = "https://prod-107.westeurope.logic.azure.com:443/workflows/d1cddc96e3a8441d814c1751c0fdad23/triggers/manual/paths/invoke?api-version=2016-06-01";
+      
+      const response = await fetch(powerAutomateUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          to: mailTo,
+          subject: mailSubject,
+          body: mailBody,
+          filename: "barkod_sayim_raporu.xlsx",
+          filecontent: excelFile
+        })
+      });
+      
+      if(response.ok) {
+        alert("E-posta başarıyla gönderildi!");
+        hideMailPopup();
+      } else {
+        throw new Error("Mail gönderilemedi");
+      }
+    } catch (error) {
+      console.error("Mail gönderme hatası:", error);
+      alert("E-posta gönderilirken bir hata oluştu: " + error.message);
+    }
+  }
+
+
+  
 </script>
 
 
