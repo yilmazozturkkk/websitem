@@ -54,6 +54,7 @@
     
     .form-section {
       margin-top: 15px;
+      
     }
     .form-section .input-container {
       position: relative;
@@ -91,9 +92,9 @@
     }
     .form-section .radio-group {
       display: flex;
-     justify-content: space-between;
-     margin: 15px 0; /* Üst ve alt boşluk artırıldı */
-     gap: 25px;
+  justify-content: space-between;
+  margin: 15px 0; /* Üst ve alt boşluk artırıldı */
+  gap: 25px;
     }
     .form-section .radio-group label {
       flex: 1;
@@ -138,7 +139,11 @@
     z-index: 10;
     border-bottom: 2px solid #3a6d99; /* Başlık alt çizgisi daha kalın */
   }
-  
+  @media (max-width: 600px) {
+  th, td {
+    padding: 4px; 
+  }
+}
   /* Son sütundaki dikey çizgiyi kaldırma */
   th:last-child, td:last-child {
     border-right: none;
@@ -165,30 +170,31 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  width: 32px;
-  height: 32px;
+  width: 38px; 
+  height: 38px; 
   display: flex;
   align-items: center;
   justify-content: center;
   color: #4682b4;
   transition: all 0.2s ease;
+  font-size: 18px; /* Daha büyük font */
 }
-
 .icon-btn:hover {
-  background-color: rgba(70, 130, 180, 0.1);
+  background-color: rgba(70, 130, 180, 0.2);
   transform: scale(1.1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 @media (max-width: 600px) {
-  .action-buttons {
-    flex-direction: row; /* Küçük ekranda da yatay kalsın */
-    gap: 2px; /* Daha az boşluk */
+  .icon-btn {
+    width: 32px; 
+    height: 32px; 
+    font-size: 16px; 
   }
   
-  .icon-btn {
-    width: 28px;
-    height: 28px;
-    font-size: 14px;
+  .radio-group label {
+    padding: 4px 2px; 
+    font-size: 0.7rem; 
   }
 }
   
@@ -261,14 +267,16 @@
       color: #6c757d;
     }
     
-    .button-row {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-      margin: 0px auto;
-      max-width: 400px;
-    }
+    /* BUTON SATIRI */
+  .button-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 5px auto; /* Üst boşluk artırıldı */
+  max-width: 400px;
+ }
+   
     .button-row button {
       background: rgba(70, 130, 180, 0.1);
       border: 1px solid rgba(70, 130, 180, 0.3);
@@ -579,36 +587,33 @@
     
     /* RADIO BUTON STİLLERİ */
     .radio-group {
-      display: flex;
-      justify-content: space-between;
-      margin: 10px 0;
-      gap: 25px;
-    }
-    
-    .radio-group label {
-      flex: 1;
-      text-align: center;
-      padding: 10px 5px;
-      border: 2px solid #4682b4;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      user-select: none;
-      transition: all 0.3s ease;
-      background-color: #f8f9fa;
-      color: #4682b4;
-    }
-    
-    .radio-group input[type="radio"] {
-      display: none;
-    }
-    
-    .radio-group input[type="radio"]:checked + label {
-      background-color: #4682b4;
-      color: white;
-      font-weight: bold;
-      box-shadow: 0 2px 5px rgba(70, 130, 180, 0.3);
-    }
+  display: flex;
+  justify-content: space-between;
+  margin: 15px 0; /* Dikey boşluk artırıldı */
+  gap: 10px;
+}
+
+.radio-group label {
+  flex: 1;
+  text-align: center;
+  padding: 6px 3px;
+  border: 1px solid #4682b4;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  user-select: none;
+  transition: all 0.3s ease;
+  background-color: #f8f9fa;
+  color: #4682b4;
+  margin: 0 2px;
+}
+@media (max-width: 600px) {
+  .radio-group label {
+    font-size: 0.7rem;
+    min-width: 40px; 
+  }
+}
+
     /* Scroll çubuğu stil */
 ::-webkit-scrollbar {
   width: 6px;
