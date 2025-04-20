@@ -949,6 +949,9 @@ async function sendMail() {
         return;
     }
     
+    const sendBtn = document.querySelector('.mail-send-btn');
+    const originalText = sendBtn.innerHTML;
+    
     try {
         // Excel dosyasını oluştur
         const exportData = records.map((r, i) => ({
@@ -964,14 +967,20 @@ async function sendMail() {
         const worksheet = XLSX.utils.json_to_sheet(exportData);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Barkodlar");
-        const excelBinary = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-        const excelBase64 = btoa(String.fromCharCode.apply(null, excelBinary));
         
-        // Power Automate endpoint (URL'nizi buraya yapıştırın)
+        // Excel dosyasını binary olarak oluştur
+        const excelBinary = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+        
+        // Binary'yi base64'e çevir
+        let binaryString = '';
+        for (let i = 0; i < excelBinary.length; i++) {
+            binaryString += String.fromCharCode(excelBinary[i]);
+        }
+        const excelBase64 = btoa(binaryString);
+        
+        // Power Automate endpoint
         const powerAutomateUrl = "https://prod-107.westeurope.logic.azure.com:443/workflows/d1cddc96e3a8441d814c1751c0fdad23/triggers/manual/paths/invoke?api-version=2016-06-01";
         
-        const sendBtn = document.querySelector('.mail-send-btn');
-        const originalText = sendBtn.innerHTML;
         sendBtn.innerHTML = '<i class="bx bx-loader bx-spin"></i> Gönderiliyor...';
         sendBtn.disabled = true;
         
@@ -1000,11 +1009,8 @@ async function sendMail() {
         console.error("Mail gönderme hatası:", error);
         alert(`E-posta gönderilirken bir hata oluştu:\n${error.message}`);
     } finally {
-        const sendBtn = document.querySelector('.mail-send-btn');
-        if(sendBtn) {
-            sendBtn.innerHTML = originalText;
-            sendBtn.disabled = false;
-        }
+        sendBtn.innerHTML = originalText;
+        sendBtn.disabled = false;
     }
 }
 
