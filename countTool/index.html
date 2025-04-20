@@ -921,17 +921,24 @@ transform:"none",
     });
   });
 
-
-  
-  // Mail popup'ını göster
-  function showMailPopup() {
+ // Mail popup'ını göster
+function showMailPopup() {
     if(records.length === 0) {
-      alert("Gönderilecek kayıt bulunamadı!");
-      return;
+        alert("Gönderilecek kayıt bulunamadı!");
+        return;
     }
     
     document.getElementById('mailPopup').style.display = 'flex';
-  async function sendMail() {
+    document.getElementById('mailSubject').value = 'Barkod Sayım Raporu - ' + new Date().toLocaleDateString('tr-TR');
+}
+
+// Mail popup'ını gizle
+function hideMailPopup() {
+    document.getElementById('mailPopup').style.display = 'none';
+}
+
+// Mail gönderme fonksiyonu
+async function sendMail() {
     const mailTo = document.getElementById('mailTo').value.trim();
     const mailSubject = document.getElementById('mailSubject').value.trim();
     const mailBody = document.getElementById('mailBody').value.trim();
@@ -975,9 +982,8 @@ transform:"none",
         const response = await fetch(powerAutomateUrl, {
             method: 'POST',
             headers: {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*' 
-},
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
                 to: mailTo,
                 subject: mailSubject,
@@ -991,12 +997,14 @@ transform:"none",
             alert("E-posta başarıyla gönderildi!");
             hideMailPopup();
         } else {
-            throw new Error("Mail gönderilemedi");
+            const errorData = await response.text();
+            throw new Error(`Sunucu hatası: ${response.status} - ${errorData}`);
         }
     } catch (error) {
         console.error("Mail gönderme hatası:", error);
         alert(`E-posta gönderilirken bir hata oluştu:\n${error.message}`);
     } finally {
+        const sendBtn = document.querySelector('.mail-send-btn');
         if(sendBtn) {
             sendBtn.innerHTML = originalText;
             sendBtn.disabled = false;
