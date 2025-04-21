@@ -619,6 +619,35 @@
   width: 6px;
   height: 6px;
 }
+
+/* BUTON KONTEYNER STİLLERİ */
+.button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 5px;
+}
+
+.button-container button {
+  background: rgba(70, 130, 180, 0.1);
+  border: 1px solid rgba(70, 130, 180, 0.3);
+  border-radius: 4px;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4682b4;
+  transition: all 0.2s ease;
+}
+
+.button-container .button-text {
+  font-size: 10px;
+  margin-top: 2px;
+  color: #4682b4;
+  text-align: center;
+}
     
   </style>
 </head>
@@ -658,14 +687,24 @@
     </div>
     
     <div class="button-row">
-      <button onclick="saveRecord()" title="Kaydet"><i class='bx bx-save' ></i></button>
-      <button onclick="deleteAllRecords()" title="Tümünü Sil"><i class="bi bi-trash-fill"></i></button>
-      <button onclick="exportToExcel()" title="Export"><i class='bx bxs-download' ></i></button>
-       <button onclick="showMailPopup()" title="Mail Gönder"><i class='bx bx-mail-send'></i></button>
-     
+      <div class="button-container">
+        <button onclick="saveRecord()" title="Kaydet"><i class='bx bx-save' ></i></button>
+        <div class="button-text">Kaydet</div>
+      </div>
+      <div class="button-container">
+        <button onclick="deleteAllRecords()" title="Tümünü Sil"><i class="bi bi-trash-fill"></i></button>
+        <div class="button-text">Sil</div>
+      </div>
+      <div class="button-container">
+        <button onclick="exportToExcel()" title="Export"><i class='bx bxs-download' ></i></button>
+        <div class="button-text">İndir</div>
+      </div>
+      <div class="button-container">
+        <button onclick="showMailPopup()" title="Mail Gönder"><i class='bx bx-mail-send'></i></button>
+        <div class="button-text">Mail</div>
+      </div>
     </div>
   </div>
-
  <div class="auto-scan-toggle">
         <label>
           Auto Scan
