@@ -11,9 +11,6 @@
   <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet">
 
   <style>
-
-  
-    
     body {
       -webkit-user-select: none;
       -moz-user-select: none;
@@ -54,7 +51,6 @@
     
     .form-section {
       margin-top: 15px;
-      
     }
     .form-section .input-container {
       position: relative;
@@ -90,118 +86,122 @@
     .form-section textarea:not(:placeholder-shown) + .clear-btn {
       display: block;
     }
+    
+    /* RADIO BUTON STİLLERİ (Küçültülmüş) */
     .form-section .radio-group {
       display: flex;
-  justify-content: space-between;
-  margin: 15px 0; /* Üst ve alt boşluk artırıldı */
-  gap: 25px;
+      justify-content: space-between;
+      margin: 15px 0;
+      gap: 5px;
     }
     .form-section .radio-group label {
       flex: 1;
       text-align: center;
-      padding: 8px;
-      border: 1px solid #ccc;
+      padding: 4px 2px;
+      border: 1px solid #4682b4;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 0.7rem;
       user-select: none;
+      transition: all 0.3s ease;
+      background-color: #f8f9fa;
+      color: #4682b4;
     }
     .form-section .radio-group input[type="radio"] {
       display: none;
     }
     .form-section .radio-group input[type="radio"]:checked + label {
-      background-color: #ddd;
-      font-weight: bold;
+      background-color: #4682b4;
+      color: white;
+      font-weight: normal;
     }
     
     /* TABLO STİLLERİ */
     table {
-    overflow: hidden; /* Köşe yuvarlaklığı için */
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
-    margin-top: 15px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    border: 1px solid #e0e0e0; /* Tablo dış çerçevesi */
-  }
+      overflow: hidden;
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin-top: 15px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      border: 1px solid #e0e0e0;
+    }
   
-  th, td {
-    padding: 8px 10px;
-    border-right: 1px solid #e0e0e0; /* Dikey çizgiler */
-    border-bottom: 1px solid #e0e0e0; /* Yatay çizgiler */
-  }
+    th, td {
+      padding: 8px 10px;
+      border-right: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+    }
   
-  th {
-    background-color: #4682b4;
-    color: white;
-    text-align: left;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    border-bottom: 2px solid #3a6d99; /* Başlık alt çizgisi daha kalın */
-  }
-  @media (max-width: 600px) {
-  th, td {
-    padding: 4px; 
-  }
-}
-  /* Son sütundaki dikey çizgiyi kaldırma */
-  th:last-child, td:last-child {
-    border-right: none;
-  }
+    th {
+      background-color: #4682b4;
+      color: white;
+      text-align: left;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 2px solid #3a6d99;
+    }
+    
+    @media (max-width: 600px) {
+      th, td {
+        padding: 4px; 
+      }
+    }
+    
+    th:last-child, td:last-child {
+      border-right: none;
+    }
   
-  tr:nth-child(even) {
-    background-color: #f8f9fa;
-  }
+    tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
   
-  tr:hover {
-    background-color: #e9f5ff;
-  }
-  /* İŞLEM BUTONLARI */
-  .action-buttons {
-  display: flex;
-  gap: 4px;
-  justify-content: center;
-  align-items: center;
-  min-width: 80px;
-}
+    tr:hover {
+      background-color: #e9f5ff;
+    }
+    
+    /* İŞLEM BUTONLARI */
+    .action-buttons {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+      align-items: center;
+      min-width: 80px;
+    }
 
-.icon-btn {
-  background: transparent;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  width: 38px; 
-  height: 38px; 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #4682b4;
-  transition: all 0.2s ease;
-  font-size: 18px; /* Daha büyük font */
-}
-.icon-btn:hover {
-  background-color: rgba(70, 130, 180, 0.2);
-  transform: scale(1.1);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
+    .icon-btn {
+      background: transparent;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 38px; 
+      height: 38px; 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #4682b4;
+      transition: all 0.2s ease;
+      font-size: 18px;
+    }
+    .icon-btn:hover {
+      background-color: rgba(70, 130, 180, 0.2);
+      transform: scale(1.1);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
 
-@media (max-width: 600px) {
-  .icon-btn {
-    width: 32px; 
-    height: 32px; 
-    font-size: 16px; 
-  }
+    @media (max-width: 600px) {
+      .icon-btn {
+        width: 32px; 
+        height: 32px; 
+        font-size: 16px; 
+      }
+    }
   
-  .radio-group label {
-    padding: 4px 2px; 
-    font-size: 0.7rem; 
-  }
-}
-  
-  /* Tablo hücrelerini ortala */
-  td {
-    vertical-align: middle;
-  }   
+    /* Tablo hücrelerini ortala */
+    td {
+      vertical-align: middle;
+    }   
     
     .warning {
       color: red;
@@ -267,38 +267,55 @@
       color: #6c757d;
     }
     
-    /* BUTON SATIRI */
-  .button-row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin: 5px auto; /* Üst boşluk artırıldı */
-  max-width: 400px;
- }
-   
-    .button-row button {
+    /* BUTON SATIRI (Güncellenmiş) */
+    .button-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin: 15px auto;
+      max-width: 400px;
+    }
+    
+    /* BUTON KONTEYNER STİLLERİ (Güncellenmiş) */
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       background: rgba(70, 130, 180, 0.1);
       border: 1px solid rgba(70, 130, 180, 0.3);
-      border-radius: 4px;
-      font-size: 16px;
+      border-radius: 10px;
+      padding: 6px;
+      width: 60px;
+      transition: all 0.2s ease;
+    }
+    
+    .button-container:hover {
+      background-color: rgba(70, 130, 180, 0.2);
+    }
+
+    .button-container button {
+      background: transparent;
+      border: none;
       cursor: pointer;
       width: 32px;
       height: 32px;
-      margin: 2px;
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       color: #4682b4;
-      transition: all 0.2s ease;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      padding: 0;
+      
     }
-    .button-row button i {
-      font-size: 22px;
+
+    .button-container .button-text {
+      font-size: 10px;
+      margin-top: 4px;
+      color: #4682b4;
+      text-align: center;
+      font-weight: 500;
     }
-    .button-row button:hover {
-      background-color: rgba(70, 130, 180, 0.2);
-    }
+    
     .auto-scan-toggle {
       display: flex;
       align-items: center;
@@ -413,12 +430,18 @@
       }
       .auto-scan-toggle {
        min-height: 5vh; 
-    margin: 0px;
-    padding: 0;
-        margin-left: 0;
-        margin-top: 5px;
-        width: 100%;
-        justify-content: flex-center;
+       margin: 0px;
+       padding: 0;
+       margin-left: 0;
+       margin-top: 5px;
+       width: 100%;
+       justify-content: flex-center;
+      }
+      
+      /* Mobilde radio butonları daha küçük */
+      .form-section .radio-group label {
+        font-size: 0.6rem;
+        padding: 2px 1px;
       }
     }
     .search-container {
@@ -442,7 +465,7 @@
       font-size: 16px !important;
     }
 
-  /* Mail gönder popup stili */
+    /* Mail gönder popup stili */
     .mail-popup {
       display: none;
       position: fixed;
@@ -524,130 +547,73 @@
     }
     
     * {
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', sans-serif;
-        }
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
 
-        /* uzmanlık alanları animasyonu */
-        .home_body h2 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    min-height: 3vh; 
-    margin: 5px;
-    padding: 0;
-    font-size: 14px;
-}
-
-        
-        .home_body h2 span {
-          align-items: center;
+    /* uzmanlık alanları animasyonu */
+    .home_body h2 {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       justify-content: center;
-            position: relative;
-            display: inline-block;
-            color: transparent;
-            -webkit-text-stroke: 0.7px #4682b4;
-            animation: display-text 16s linear infinite;
-            animation-delay: calc(-4s * var(--i));
-        }
+      text-align: center;
+      min-height: 3vh; 
+      margin: 5px;
+      padding: 0;
+      font-size: 14px;
+    }
 
-        @keyframes display-text {
-            25%,
-            100% {
-                display: none;
-            }
-        }
-
-        .home_body h2 span::before {
-        align-items: center;
+    .home_body h2 span {
+      align-items: center;
       justify-content: center;
-            content: attr(data-text);
-            position: absolute;
-            width: 0;
-            border-right: 2px solid #4682b4;
-            color: #4682b4;
-            white-space: nowrap;
-            overflow: hidden;
-            animation: fill-text 4s linear infinite;
-        }
-      
-        @keyframes fill-text {
-            10%,
-            100% {
-                width: 0;
-            }
-            70%,
-            90% {
-                width: 100%;
-            }
-        }
-    
-    /* RADIO BUTON STİLLERİ */
-    .radio-group {
-  display: flex;
-  justify-content: space-between;
-  margin: 15px 0; /* Dikey boşluk artırıldı */
-  gap: 10px;
-}
+      position: relative;
+      display: inline-block;
+      color: transparent;
+      -webkit-text-stroke: 0.7px #4682b4;
+      animation: display-text 16s linear infinite;
+      animation-delay: calc(-4s * var(--i));
+    }
 
-.radio-group label {
-  flex: 1;
-  text-align: center;
-  padding: 6px 3px;
-  border: 1px solid #4682b4;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.8rem;
-  user-select: none;
-  transition: all 0.3s ease;
-  background-color: #f8f9fa;
-  color: #4682b4;
-  margin: 0 2px;
-}
-@media (max-width: 600px) {
-  .radio-group label {
-    font-size: 0.7rem;
-    min-width: 40px; 
-  }
-}
+    @keyframes display-text {
+      25%,
+      100% {
+        display: none;
+      }
+    }
+
+    .home_body h2 span::before {
+      align-items: center;
+      justify-content: center;
+      content: attr(data-text);
+      position: absolute;
+      width: 0;
+      border-right: 2px solid #4682b4;
+      color: #4682b4;
+      white-space: nowrap;
+      overflow: hidden;
+      animation: fill-text 4s linear infinite;
+    }
+  
+    @keyframes fill-text {
+      10%,
+      100% {
+        width: 0;
+      }
+      70%,
+      90% {
+        width: 100%;
+      }
+    }
 
     /* Scroll çubuğu stil */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-/* BUTON KONTEYNER STİLLERİ */
-.button-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0 5px;
-}
-
-.button-container button {
-  background: rgba(70, 130, 180, 0.1);
-  border: 1px solid rgba(70, 130, 180, 0.3);
-  border-radius: 4px;
-  cursor: pointer;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #4682b4;
-  transition: all 0.2s ease;
-}
-
-.button-container .button-text {
-  font-size: 10px;
-  margin-top: 2px;
-  color: #4682b4;
-  text-align: center;
-}
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+  
+    
     
   </style>
 </head>
