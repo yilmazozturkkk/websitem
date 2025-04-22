@@ -772,22 +772,6 @@
   // Yıl bilgisini otomatik ekle
   document.getElementById('year').textContent = new Date().getFullYear();
 
-  // Beep sesi seçenekleri
-  const beepSounds = [
-    new Audio("https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3"),
-    new Audio("https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3"),
-    new Audio("https://assets.mixkit.co/sfx/preview/mixkit-positive-interface-beep-221.mp3"),
-    new Audio("https://assets.mixkit.co/sfx/preview/mixkit-retro-arcade-casino-notification-211.mp3")
-  ];
-  
-  // Varsayılan olarak ilk sesi seç
-  let currentBeepSound = beepSounds[0];
-
-  function playSound() {
-    currentBeepSound.currentTime = 0;
-    currentBeepSound.play().catch(e => console.warn("Ses çalma engellendi", e));
-  }
-
   let records = JSON.parse(localStorage.getItem("barcodeRecords")) || [];
   let editIndex = -1;
   let scannerActive = false;
@@ -871,7 +855,6 @@ transform:"none",
           config,
           (decodedText) => {
             document.getElementById("barcodeInput").value = decodedText;
-            playSound();
             stopScanner();
           },
           (errorMessage) => {
