@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+  <a href="https://prod-174.westeurope.logic.azure.com:443/workflows/aa0ffaf68e2a4333b38592fe26ffd305/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Vxf5yM5l2MNgYdav_cNx2Bzzx5kKevGd8acL1lP00Dc</a>
+</body>
+</html>
