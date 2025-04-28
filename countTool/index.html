@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<link rel="icon" href="https://unpkg.com/boxicons@2.1.2/svg/regular/bx-qr-scan.svg" type="image/svg+xml">
-   <title>Barkod Sayım</title>
+  <link rel="icon" href="https://unpkg.com/boxicons@2.1.2/svg/regular/bx-qr-scan.svg" type="image/svg+xml">
+  <title id="pageTitle">Barkod Sayım</title>
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
@@ -16,11 +16,11 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-7R2WLSSPRD');
 </script>
   
   <style>
+    /* Stil tanımları aynı kalıyor */
     body {
       -webkit-user-select: none;
       -moz-user-select: none;
@@ -32,7 +32,7 @@
       background: #fff;
       touch-action: manipulation;
     }
-    header {
+   header {
       text-align: center;
       font-size: 1rem;
       padding: 0px;
@@ -633,27 +633,27 @@
 
 <div class="container">
   <div class="scanner-btn-container">
-    <button id="toggleScannerBtn" onclick="toggleScanner()" class="scanner-btn" title="Kamerayı Başlat/Durdur">
+    <button id="toggleScannerBtn" onclick="toggleScanner()" class="scanner-btn" title="">
       <i id="toggleScannerIcon" class='bx bx-scan'></i>
     </button>
-    <div id="scannerBtnText" class="scanner-btn-text">START</div>
+    <div id="scannerBtnText" class="scanner-btn-text"></div>
   </div>
 
   <div id="qr-reader"></div>
 
   <div class="form-section">
     <div class="input-container">
-      <input type="text" id="barcodeInput" placeholder="Barkod" />
+      <input type="text" id="barcodeInput" placeholder="" />
       <button class="clear-btn" onclick="clearInput('barcodeInput')">×</button>
     </div>
     
     <div class="input-container">
-      <input type="number" id="quantityInput" placeholder="Miktar" inputmode="numeric" />
+      <input type="number" id="quantityInput" placeholder="" inputmode="numeric" />
       <button class="clear-btn" onclick="clearInput('quantityInput')">×</button>
     </div>
     
     <div class="input-container">
-      <input type="text" id="descriptionInput" placeholder="Açıklama" />
+      <input type="text" id="descriptionInput" placeholder="" />
       <button class="clear-btn" onclick="clearInput('descriptionInput')">×</button>
     </div>
     
@@ -666,92 +666,90 @@
     
     <div class="button-row">
       <div class="button-container">
-        <button onclick="saveRecord()" title="Kaydet"><i class='bx bx-save' ></i></button>
-        <div class="button-text">Kaydet</div>
+        <button onclick="saveRecord()" title=""><i class='bx bx-save' ></i></button>
+        <div class="button-text"></div>
       </div>
       <div class="button-container">
-        <button onclick="deleteAllRecords()" title="Tümünü Sil"><i class="bi bi-trash-fill"></i></button>
-        <div class="button-text">Sil</div>
+        <button onclick="deleteAllRecords()" title=""><i class="bi bi-trash-fill"></i></button>
+        <div class="button-text"></div>
       </div>
       <div class="button-container">
-        <button onclick="exportToExcel()" title="Export"><i class='bx bxs-download' ></i></button>
-        <div class="button-text">İndir</div>
+        <button onclick="exportToExcel()" title=""><i class='bx bxs-download' ></i></button>
+        <div class="button-text"></div>
       </div>
       <div class="button-container">
-        <button onclick="showMailPopup()" title="Mail Gönder"><i class='bx bx-mail-send'></i></button>
-        <div class="button-text">Mail</div>
+        <button onclick="showMailPopup()" title=""><i class='bx bx-mail-send'></i></button>
+        <div class="button-text"></div>
       </div>
     </div>
   </div>
- <div class="auto-scan-toggle">
-        <label>
-          Auto Scan
-          <div class="toggle-switch">
-            <input type="checkbox" id="autoCameraCheckbox" checked />
-            <span class="slider"></span>
-          </div>
-        </label>
+  
+  <div class="auto-scan-toggle">
+    <label>
+      <span id="autoScanLabel">Auto Scan</span>
+      <div class="toggle-switch">
+        <input type="checkbox" id="autoCameraCheckbox" checked />
+        <span class="slider"></span>
       </div>
-      
-  <div class="home_body">
-               
-                <h2 class="home_title">
-    <span style="--i:4;" data-text="START'a dokun">START'a dokun</span>
-    <span style="--i:3;" data-text="Barkodu okut">Barkodu okut</span>
-    <span style="--i:2;" data-text="Miktarı gir">Miktarı gir</span>
-    <span style="--i:1;" data-text="Kaydet">Kaydet</span>
-</h2>
-                
-                
-                
-            </div>    
-      
-      
-   <div class="form-section">
-  <div class="search-container">
-    <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="🔍 Tabloda Ara...">
-    <button class="clear-btn" onclick="clearSearch()">×</button>
+    </label>
   </div>
+      
+  <div class="home_body">               
+    <h2 class="home_title">
+      <span style="--i:4;" data-text=""></span>
+      <span style="--i:3;" data-text=""></span>
+      <span style="--i:2;" data-text=""></span>
+      <span style="--i:1;" data-text=""></span>
+    </h2>                
+  </div>    
+      
+  <div class="form-section">
+    <div class="search-container">
+      <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="">
+      <button class="clear-btn" onclick="clearSearch()">×</button>
+    </div>
   </div>
-<!-- Mail Gönder Popup Formu -->
-<div id="mailPopup" class="mail-popup">
-  <div class="mail-popup-content">
-    <h3><i class='bx bx-mail-send'></i> Excel Dosyasını Gönder</h3>
-    <form id="mailForm">
-      <div class="mail-form-group">
-        <label for="mailTo">Kime:</label>
-        <input type="email" id="mailTo" required placeholder="alici@ornek.com">
-      </div>
-      <div class="mail-form-group">
-        <label for="mailSubject">Konu:</label>
-        <input type="text" id="mailSubject" required placeholder="Barkod Sayım Raporu">
-      </div>
-      <div class="mail-form-group">
-        <label for="mailBody">Açıklama:</label>
-        <textarea id="mailBody" placeholder="Ekte barkod sayım raporu bulunmaktadır."></textarea>
-      </div>
-      <div class="mail-buttons">
-        <button type="button" onclick="hideMailPopup()" class="mail-cancel-btn">
-          <i class='bx bx-x'></i> Vazgeç
-        </button>
-        <button type="button" onclick="sendMail()" class="mail-send-btn">
-          <i class='bx bx-send'></i> Gönder
-        </button>
-      </div>
-    </form>
+  
+  <!-- Mail Gönder Popup Formu -->
+  <div id="mailPopup" class="mail-popup">
+    <div class="mail-popup-content">
+      <h3><i class='bx bx-mail-send'></i> <span id="mailPopupTitle"></span></h3>
+      <form id="mailForm">
+        <div class="mail-form-group">
+          <label for="mailTo" id="mailToLabel"></label>
+          <input type="email" id="mailTo" required placeholder="">
+        </div>
+        <div class="mail-form-group">
+          <label for="mailSubject" id="mailSubjectLabel"></label>
+          <input type="text" id="mailSubject" required placeholder="">
+        </div>
+        <div class="mail-form-group">
+          <label for="mailBody" id="mailBodyLabel"></label>
+          <textarea id="mailBody" placeholder=""></textarea>
+        </div>
+        <div class="mail-buttons">
+          <button type="button" onclick="hideMailPopup()" class="mail-cancel-btn">
+            <i class='bx bx-x'></i> <span id="mailCancelText"></span>
+          </button>
+          <button type="button" onclick="sendMail()" class="mail-send-btn">
+            <i class='bx bx-send'></i> <span id="mailSendText"></span>
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
-</div>
+  
   <table id="recordsTable">
     <thead>
       <tr>
         <th onclick="sortTable(0)">#</th>
-        <th onclick="sortTable(1)">Barkod</th>
-        <th onclick="sortTable(2)">Miktar</th>
-        <th onclick="sortTable(3)">Ölçü Birimi</th>
-        <th onclick="sortTable(4)">Açıklama</th>
-        <th onclick="sortTable(5)">Tarih/Saat</th>
-        <th onclick="sortTable(6)">Durum</th>
-        <th>İşlem</th>
+        <th onclick="sortTable(1)" id="barcodeHeader"></th>
+        <th onclick="sortTable(2)" id="quantityHeader"></th>
+        <th onclick="sortTable(3)" id="unitHeader"></th>
+        <th onclick="sortTable(4)" id="descriptionHeader"></th>
+        <th onclick="sortTable(5)" id="datetimeHeader"></th>
+        <th onclick="sortTable(6)" id="statusHeader"></th>
+        <th id="actionHeader"></th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -771,17 +769,272 @@
     </div>
 
     <div class="footer-info">
-     <p>Bu araç, <a href="https://www.innovativesolutions.com.tr" target="_blank"><strong>Yılmaz Öztürk</strong></a> tarafından geliştirilmiştir. &copy; <span id="year"></span></p>
-
+      <p><span id="footerText"></span> <a href="https://www.innovativesolutions.com.tr" target="_blank"><strong>Yılmaz Öztürk</strong></a> <span id="footerText2"></span> &copy; <span id="year"></span></p>
     </div>
-    
   </div>
 </footer>
 
 <script>
-  // Yıl bilgisini otomatik ekle
-  document.getElementById('year').textContent = new Date().getFullYear();
+  // Dil desteği için çoklu dil nesnesi
+  const translations = {
+    tr: {
+      pageTitle: "Barkod Sayım",
+      barcodePlaceholder: "Barkod",
+      quantityPlaceholder: "Miktar",
+      descriptionPlaceholder: "Açıklama",
+      saveBtn: "Kaydet",
+      deleteBtn: "Sil",
+      exportBtn: "İndir",
+      mailBtn: "Mail",
+      scannerBtnText: "BAŞLAT",
+      scannerBtnStopText: "DURDUR",
+      scannerBtnTitleStart: "Kamerayı Başlat",
+      scannerBtnTitleStop: "Kamerayı Durdur",
+      autoScanLabel: "Otomatik Tarama",
+      searchPlaceholder: "🔍 Tabloda Ara...",
+      tableHeaders: ["#", "Barkod", "Miktar", "Ölçü Birimi", "Açıklama", "Tarih/Saat", "Durum", "İşlem"],
+      statusNew: "Yeni",
+      statusRepeat: "Tekrar",
+      statusEdited: "Düzeltildi",
+      mailPopupTitle: "Excel Dosyasını Gönder",
+      mailToLabel: "Kime:",
+      mailToPlaceholder: "alici@ornek.com",
+      mailSubjectLabel: "Konu:",
+      mailSubjectPlaceholder: "Barkod Sayım Raporu",
+      mailBodyLabel: "Açıklama:",
+      mailBodyPlaceholder: "Ekte barkod sayım raporu bulunmaktadır.",
+      mailCancelText: "Vazgeç",
+      mailSendText: "Gönder",
+      footerText1: "Bu araç,",
+      footerText2: "tarafından geliştirilmiştir.",
+      homeTexts: ["START'a dokun", "Barkodu okut", "Miktarı gir", "Kaydet"],
+      alertMessages: {
+        requiredFields: "Barkod ve miktar zorunludur.",
+        confirmDeleteAll: "Tüm kayıtlar silinsin mi?",
+        confirmDelete: "Bu kaydı silmek istiyor musunuz?",
+        noRecords: "Gönderilecek kayıt bulunamadı!",
+        emailRequired: "Lütfen alıcı e-posta adresini giriniz!",
+        emailSent: "E-posta başarıyla gönderildi!",
+        emailError: "E-posta gönderilirken bir hata oluştu:"
+      }
+    },
+    en: {
+      pageTitle: "Barcode Scanner",
+      barcodePlaceholder: "Barcode",
+      quantityPlaceholder: "Quantity",
+      descriptionPlaceholder: "Description",
+      saveBtn: "Save",
+      deleteBtn: "Delete",
+      exportBtn: "Export",
+      mailBtn: "Email",
+      scannerBtnText: "START",
+      scannerBtnStopText: "STOP",
+      scannerBtnTitleStart: "Start Camera",
+      scannerBtnTitleStop: "Stop Camera",
+      autoScanLabel: "Auto Scan",
+      searchPlaceholder: "🔍 Search in table...",
+      tableHeaders: ["#", "Barcode", "Quantity", "Unit", "Description", "Date/Time", "Status", "Action"],
+      statusNew: "New",
+      statusRepeat: "Repeat",
+      statusEdited: "Edited",
+      mailPopupTitle: "Send Excel File",
+      mailToLabel: "To:",
+      mailToPlaceholder: "recipient@example.com",
+      mailSubjectLabel: "Subject:",
+      mailSubjectPlaceholder: "Barcode Scan Report",
+      mailBodyLabel: "Message:",
+      mailBodyPlaceholder: "Please find the barcode scan report attached.",
+      mailCancelText: "Cancel",
+      mailSendText: "Send",
+      footerText1: "This tool is developed by",
+      footerText2: "",
+      homeTexts: ["Touch START", "Scan barcode", "Enter quantity", "Save"],
+      alertMessages: {
+        requiredFields: "Barcode and quantity are required.",
+        confirmDeleteAll: "Delete all records?",
+        confirmDelete: "Are you sure you want to delete this record?",
+        noRecords: "No records found to send!",
+        emailRequired: "Please enter recipient email address!",
+        emailSent: "Email sent successfully!",
+        emailError: "An error occurred while sending email:"
+      }
+    },
+    de: {
+      pageTitle: "Barcode Scanner",
+      barcodePlaceholder: "Barcode",
+      quantityPlaceholder: "Menge",
+      descriptionPlaceholder: "Beschreibung",
+      saveBtn: "Speichern",
+      deleteBtn: "Löschen",
+      exportBtn: "Exportieren",
+      mailBtn: "E-Mail",
+      scannerBtnText: "START",
+      scannerBtnStopText: "STOP",
+      scannerBtnTitleStart: "Kamera starten",
+      scannerBtnTitleStop: "Kamera stoppen",
+      autoScanLabel: "Automatischer Scan",
+      searchPlaceholder: "🔍 In Tabelle suchen...",
+      tableHeaders: ["#", "Barcode", "Menge", "Einheit", "Beschreibung", "Datum/Zeit", "Status", "Aktion"],
+      statusNew: "Neu",
+      statusRepeat: "Wiederholen",
+      statusEdited: "Bearbeitet",
+      mailPopupTitle: "Excel-Datei senden",
+      mailToLabel: "An:",
+      mailToPlaceholder: "empfänger@beispiel.de",
+      mailSubjectLabel: "Betreff:",
+      mailSubjectPlaceholder: "Barcode-Scan-Bericht",
+      mailBodyLabel: "Nachricht:",
+      mailBodyPlaceholder: "Anbei finden Sie den Barcode-Scan-Bericht.",
+      mailCancelText: "Abbrechen",
+      mailSendText: "Senden",
+      footerText1: "Dieses Tool wurde entwickelt von",
+      footerText2: "",
+      homeTexts: ["START berühren", "Barcode scannen", "Menge eingeben", "Speichern"],
+      alertMessages: {
+        requiredFields: "Barcode und Menge sind erforderlich.",
+        confirmDeleteAll: "Alle Datensätze löschen?",
+        confirmDelete: "Möchten Sie diesen Datensatz wirklich löschen?",
+        noRecords: "Keine Datensätze zum Senden gefunden!",
+        emailRequired: "Bitte geben Sie die Empfänger-E-Mail-Adresse ein!",
+        emailSent: "E-Mail wurde erfolgreich gesendet!",
+        emailError: "Fehler beim Senden der E-Mail:"
+      }
+    },
+    fr: {
+      pageTitle: "Scanner de Code-barres",
+      barcodePlaceholder: "Code-barres",
+      quantityPlaceholder: "Quantité",
+      descriptionPlaceholder: "Description",
+      saveBtn: "Enregistrer",
+      deleteBtn: "Supprimer",
+      exportBtn: "Exporter",
+      mailBtn: "Email",
+      scannerBtnText: "DÉMARRER",
+      scannerBtnStopText: "ARRÊTER",
+      scannerBtnTitleStart: "Démarrer la caméra",
+      scannerBtnTitleStop: "Arrêter la caméra",
+      autoScanLabel: "Scan automatique",
+      searchPlaceholder: "🔍 Rechercher dans le tableau...",
+      tableHeaders: ["#", "Code-barres", "Quantité", "Unité", "Description", "Date/Heure", "Statut", "Action"],
+      statusNew: "Nouveau",
+      statusRepeat: "Répéter",
+      statusEdited: "Modifié",
+      mailPopupTitle: "Envoyer un fichier Excel",
+      mailToLabel: "À:",
+      mailToPlaceholder: "destinataire@exemple.com",
+      mailSubjectLabel: "Sujet:",
+      mailSubjectPlaceholder: "Rapport de scan de code-barres",
+      mailBodyLabel: "Message:",
+      mailBodyPlaceholder: "Veuillez trouver ci-joint le rapport de scan de code-barres.",
+      mailCancelText: "Annuler",
+      mailSendText: "Envoyer",
+      footerText1: "Cet outil est développé par",
+      footerText2: "",
+      homeTexts: ["Appuyez sur DÉMARRER", "Scannez le code-barres", "Entrez la quantité", "Enregistrer"],
+      alertMessages: {
+        requiredFields: "Le code-barres et la quantité sont obligatoires.",
+        confirmDeleteAll: "Supprimer tous les enregistrements?",
+        confirmDelete: "Voulez-vous vraiment supprimer cet enregistrement?",
+        noRecords: "Aucun enregistrement trouvé à envoyer!",
+        emailRequired: "Veuillez entrer l'adresse e-mail du destinataire!",
+        emailSent: "E-mail envoyé avec succès!",
+        emailError: "Une erreur s'est produite lors de l'envoi de l'e-mail:"
+      }
+    }
+  };
 
+  // Tarayıcı dilini algıla ve uygun dili seç
+  function detectLanguage() {
+    const browserLang = navigator.language || navigator.userLanguage;
+    const langCode = browserLang.split('-')[0];
+    
+    // Desteklenen diller: tr, en, de, fr
+    const supportedLangs = ['tr', 'en', 'de', 'fr'];
+    const defaultLang = 'tr';
+    
+    return supportedLangs.includes(langCode) ? langCode : defaultLang;
+  }
+
+  // Sayfa dilini ayarla
+  function setPageLanguage(lang) {
+    const langData = translations[lang] || translations['tr'];
+    
+    // Başlık ve diğer metinleri güncelle
+    document.getElementById('pageTitle').textContent = langData.pageTitle;
+    document.getElementById('barcodeInput').placeholder = langData.barcodePlaceholder;
+    document.getElementById('quantityInput').placeholder = langData.quantityPlaceholder;
+    document.getElementById('descriptionInput').placeholder = langData.descriptionPlaceholder;
+    document.getElementById('searchInput').placeholder = langData.searchPlaceholder;
+    document.getElementById('autoScanLabel').textContent = langData.autoScanLabel;
+    document.getElementById('scannerBtnText').textContent = langData.scannerBtnText;
+    document.getElementById('toggleScannerBtn').title = langData.scannerBtnTitleStart;
+    document.getElementById('mailPopupTitle').textContent = langData.mailPopupTitle;
+    document.getElementById('mailToLabel').textContent = langData.mailToLabel;
+    document.getElementById('mailTo').placeholder = langData.mailToPlaceholder;
+    document.getElementById('mailSubjectLabel').textContent = langData.mailSubjectLabel;
+    document.getElementById('mailSubject').placeholder = langData.mailSubjectPlaceholder;
+    document.getElementById('mailBodyLabel').textContent = langData.mailBodyLabel;
+    document.getElementById('mailBody').placeholder = langData.mailBodyPlaceholder;
+    document.getElementById('mailCancelText').textContent = langData.mailCancelText;
+    document.getElementById('mailSendText').textContent = langData.mailSendText;
+    document.getElementById('footerText').textContent = langData.footerText1;
+    document.getElementById('footerText2').textContent = langData.footerText2;
+    
+    // Tablo başlıklarını güncelle
+    const tableHeaders = document.querySelectorAll('#recordsTable th');
+    langData.tableHeaders.forEach((header, index) => {
+      if (index < tableHeaders.length) {
+        tableHeaders[index].textContent = header;
+      }
+    });
+    
+    // Buton metinlerini güncelle
+    const buttonTexts = [
+      langData.saveBtn,
+      langData.deleteBtn,
+      langData.exportBtn,
+      langData.mailBtn
+    ];
+    
+    const buttonContainers = document.querySelectorAll('.button-text');
+    buttonTexts.forEach((text, index) => {
+      if (index < buttonContainers.length) {
+        buttonContainers[index].textContent = text;
+      }
+    });
+    
+    // Buton tooltip'lerini güncelle
+    const buttonTitles = [
+      langData.saveBtn,
+      langData.deleteBtn,
+      langData.exportBtn,
+      langData.mailBtn
+    ];
+    
+    const buttons = document.querySelectorAll('.button-container button');
+    buttonTitles.forEach((title, index) => {
+      if (index < buttons.length) {
+        buttons[index].title = title;
+      }
+    });
+    
+    // Anasayfa metinlerini güncelle
+    const homeTextSpans = document.querySelectorAll('.home_title span');
+    langData.homeTexts.forEach((text, index) => {
+      if (index < homeTextSpans.length) {
+        homeTextSpans[index].textContent = text;
+        homeTextSpans[index].setAttribute('data-text', text);
+      }
+    });
+    
+    // Dil ayarını localStorage'a kaydet
+    localStorage.setItem('preferredLanguage', lang);
+    
+    return langData;
+  }
+
+  // Uygulama başlatma
+  let currentLangData;
   let records = JSON.parse(localStorage.getItem("barcodeRecords")) || [];
   let editIndex = -1;
   let scannerActive = false;
@@ -790,6 +1043,10 @@
 
   // Sayfa yüklendiğinde ayarları yükle
   document.addEventListener('DOMContentLoaded', () => {
+    // Kullanıcının tercih ettiği dili kontrol et (localStorage'da varsa)
+    const preferredLanguage = localStorage.getItem('preferredLanguage') || detectLanguage();
+    currentLangData = setPageLanguage(preferredLanguage);
+    
     displayRecords();
     document.getElementById("quantityInput").setAttribute("inputmode", "numeric");
     document.getElementById("autoCameraCheckbox").checked = autoCameraEnabled;
@@ -819,42 +1076,43 @@
       
       const config = {
         fps: 15,
-        qrbox: { width: 300, height: 300 },
+        qrbox: { width: 320, height: 450 },
         aspectRatio: 1.333,
         supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
         formatsToSupport: [
           Html5QrcodeSupportedFormats.UPC_A,
-  Html5QrcodeSupportedFormats.UPC_E,
-  Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION,
-  Html5QrcodeSupportedFormats.EAN_8,
-  Html5QrcodeSupportedFormats.EAN_13,
-  Html5QrcodeSupportedFormats.CODE_39,
-  Html5QrcodeSupportedFormats.CODE_93,
-  Html5QrcodeSupportedFormats.CODE_128,
-  Html5QrcodeSupportedFormats.CODABAR,
-  Html5QrcodeSupportedFormats.ITF,
-  Html5QrcodeSupportedFormats.ITF_14,
-  Html5QrcodeSupportedFormats.MSI,
-  Html5QrcodeSupportedFormats.PLESSEY,
-  Html5QrcodeSupportedFormats.QR_CODE,
-  Html5QrcodeSupportedFormats.DATA_MATRIX,
-  Html5QrcodeSupportedFormats.AZTEC,
-  Html5QrcodeSupportedFormats.PDF_417,
-  Html5QrcodeSupportedFormats.MAXICODE,
-  Html5QrcodeSupportedFormats.RSS_14,
-  Html5QrcodeSupportedFormats.RSS_EXPANDED,
-  Html5QrcodeSupportedFormats.JAN,
-  Html5QrcodeSupportedFormats.IATA_2OF5        ],
+          Html5QrcodeSupportedFormats.UPC_E,
+          Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION,
+          Html5QrcodeSupportedFormats.EAN_8,
+          Html5QrcodeSupportedFormats.EAN_13,
+          Html5QrcodeSupportedFormats.CODE_39,
+          Html5QrcodeSupportedFormats.CODE_93,
+          Html5QrcodeSupportedFormats.CODE_128,
+          Html5QrcodeSupportedFormats.CODABAR,
+          Html5QrcodeSupportedFormats.ITF,
+          Html5QrcodeSupportedFormats.ITF_14,
+          Html5QrcodeSupportedFormats.MSI,
+          Html5QrcodeSupportedFormats.PLESSEY,
+          Html5QrcodeSupportedFormats.QR_CODE,
+          Html5QrcodeSupportedFormats.DATA_MATRIX,
+          Html5QrcodeSupportedFormats.AZTEC,
+          Html5QrcodeSupportedFormats.PDF_417,
+          Html5QrcodeSupportedFormats.MAXICODE,
+          Html5QrcodeSupportedFormats.RSS_14,
+          Html5QrcodeSupportedFormats.RSS_EXPANDED,
+          Html5QrcodeSupportedFormats.JAN,
+          Html5QrcodeSupportedFormats.IATA_2OF5
+        ],
         videoConstraints: {
           facingMode: "environment",
           width: { ideal: 1920 },
           height: { ideal: 1080 },
           focusMode: "continuous",
-transform:"none",
+          transform:"none",
           advanced: [
-{ zoom: 2.5 }, // Başlangıç zoom seviyesi
-          { torch: false } // Fener başlangıçta kapalı
- ]
+            { zoom: 2.5 },
+            { torch: false }
+          ]
         }
       };
 
@@ -874,8 +1132,8 @@ transform:"none",
         scannerActive = true;
         toggleBtn.classList.add("active");
         toggleIcon.className = 'bx bx-stop-circle';
-        scannerText.textContent = "STOP";
-        toggleBtn.title = "Kamerayı Durdur";
+        scannerText.textContent = currentLangData.scannerBtnStopText;
+        toggleBtn.title = currentLangData.scannerBtnTitleStop;
       } catch (err) {
         console.error("Kamera başlatılamadı:", err);
         document.getElementById(qrRegionId).style.display = "none";
@@ -887,18 +1145,23 @@ transform:"none",
 
   // Tarayıcıyı durdur
   async function stopScanner() {
-    if (html5QrCode) {
-      await html5QrCode.stop();
-      document.getElementById("qr-reader").style.display = "none";
-      scannerActive = false;
-      const toggleBtn = document.getElementById("toggleScannerBtn");
-      const toggleIcon = document.getElementById("toggleScannerIcon");
-      const scannerText = document.getElementById("scannerBtnText");
-      
-      toggleBtn.classList.remove("active");
-      toggleIcon.className = 'bx bx-scan';
-      scannerText.textContent = "START";
-      document.getElementById("toggleScannerBtn").title = "Kamerayı Başlat";
+    if (html5QrCode && scannerActive) {
+      try {
+        await html5QrCode.stop();
+        document.getElementById("qr-reader").style.display = "none";
+        scannerActive = false;
+        
+        const toggleBtn = document.getElementById("toggleScannerBtn");
+        const toggleIcon = document.getElementById("toggleScannerIcon");
+        const scannerText = document.getElementById("scannerBtnText");
+        
+        toggleBtn.classList.remove("active");
+        toggleIcon.className = 'bx bx-scan';
+        scannerText.textContent = currentLangData.scannerBtnText;
+        toggleBtn.title = currentLangData.scannerBtnTitleStart;
+      } catch (err) {
+        console.error("Tarayıcı durdurulurken hata:", err);
+      }
     }
   }
 
@@ -910,16 +1173,16 @@ transform:"none",
     const description = document.getElementById("descriptionInput").value.trim();
 
     if (!barcode || !quantity) {
-      alert("Barkod ve miktar zorunludur.");
+      alert(currentLangData.alertMessages.requiredFields);
       return;
     }
 
     const now = new Date();
-    const datetime = now.toLocaleString("tr-TR");
+    const datetime = now.toLocaleString(navigator.language);
 
     const existingIndex = records.findIndex(r => r.barcode === barcode);
-    let status = existingIndex >= 0 ? "Tekrar" : "Yeni";
-    if (editIndex >= 0) status = "Düzeltildi";
+    let status = existingIndex >= 0 ? currentLangData.statusRepeat : currentLangData.statusNew;
+    if (editIndex >= 0) status = currentLangData.statusEdited;
 
     const record = { barcode, quantity, unit, description, datetime, status };
 
@@ -960,15 +1223,15 @@ transform:"none",
         <td>${r.unit}</td>
         <td>${r.description}</td>
         <td>${r.datetime || ""}</td>
-        <td class="${r.status === 'Tekrar' ? 'warning' : ''}">${r.status}</td>
+        <td class="${r.status === currentLangData.statusRepeat ? 'warning' : ''}">${r.status}</td>
         <td class="action-buttons">
-    <button class="icon-btn" onclick="editRecord(${i})" title="Düzenle">
-      <i class="bi bi-pencil-square"></i>
-    </button>
-    <button class="icon-btn" onclick="deleteRecord(${i})" title="Sil">
-      <i class="bi bi-trash-fill"></i>
-    </button>
-  </td>`;
+          <button class="icon-btn" onclick="editRecord(${i})" title="${currentLangData.tableHeaders[7]}">
+            <i class="bi bi-pencil-square"></i>
+          </button>
+          <button class="icon-btn" onclick="deleteRecord(${i})" title="${currentLangData.deleteBtn}">
+            <i class="bi bi-trash-fill"></i>
+          </button>
+        </td>`;
       tbody.appendChild(row);
     });
   }
@@ -988,7 +1251,7 @@ transform:"none",
 
   // Tüm kayıtları sil
   function deleteAllRecords() {
-    if (confirm("Tüm kayıtlar silinsin mi?")) {
+    if (confirm(currentLangData.alertMessages.confirmDeleteAll)) {
       records = [];
       localStorage.removeItem("barcodeRecords");
       displayRecords();
@@ -997,7 +1260,7 @@ transform:"none",
 
   // Tek kayıt sil
   function deleteRecord(index) {
-    if (confirm("Bu kaydı silmek istiyor musunuz?")) {
+    if (confirm(currentLangData.alertMessages.confirmDelete)) {
       records.splice(index, 1);
       localStorage.setItem("barcodeRecords", JSON.stringify(records));
       displayRecords();
@@ -1007,19 +1270,19 @@ transform:"none",
   // Excel'e aktar
   function exportToExcel() {
     const exportData = records.map((r, i) => ({
-      "Sıra": i + 1,
-      "Barkod": r.barcode,
-      "Miktar": r.quantity,
-      "Ölçü Birimi": r.unit,
-      "Açıklama": r.description,
-      "Tarih/Saat": r.datetime || "",
-      "Durum": r.status
+      [currentLangData.tableHeaders[0]]: i + 1,
+      [currentLangData.tableHeaders[1]]: r.barcode,
+      [currentLangData.tableHeaders[2]]: r.quantity,
+      [currentLangData.tableHeaders[3]]: r.unit,
+      [currentLangData.tableHeaders[4]]: r.description,
+      [currentLangData.tableHeaders[5]]: r.datetime || "",
+      [currentLangData.tableHeaders[6]]: r.status
     }));
     
     const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Barkodlar");
-    XLSX.writeFile(workbook, "barkod_kayitlari.xlsx");
+    XLSX.utils.book_append_sheet(workbook, worksheet, currentLangData.tableHeaders[1]);
+    XLSX.writeFile(workbook, `barcode_records_${new Date().toISOString().slice(0,10)}.xlsx`);
   }
 
   // Tablo sıralama
@@ -1073,6 +1336,132 @@ transform:"none",
     searchTable();
   }
 
+  // Mail popup'ını göster
+  function showMailPopup() {
+    if(records.length === 0) {
+      alert(currentLangData.alertMessages.noRecords);
+      return;
+    }
+    
+    document.getElementById('mailPopup').style.display = 'flex';
+    document.getElementById('mailSubject').value = `${currentLangData.mailSubjectPlaceholder} - ${new Date().toLocaleDateString(navigator.language)}`;
+  }
+
+  // Mail popup'ını gizle
+  function hideMailPopup() {
+    document.getElementById('mailPopup').style.display = 'none';
+  }
+
+  // Mail gönderme fonksiyonu
+  async function sendMail() {
+    const mailTo = document.getElementById('mailTo').value.trim();
+    const mailSubject = document.getElementById('mailSubject').value.trim();
+    const mailBody = document.getElementById('mailBody').value.trim();
+    
+    if(!mailTo) {
+      alert(currentLangData.alertMessages.emailRequired);
+      return;
+    }
+    
+    const sendBtn = document.querySelector('.mail-send-btn');
+    const originalText = sendBtn.innerHTML;
+    sendBtn.innerHTML = `<i class="bx bx-loader bx-spin"></i> ${currentLangData.mailSendText}...`;
+    sendBtn.disabled = true;
+    
+    try {
+          // Excel dosyasını oluştur
+      const exportData = records.map((r, i) => ({
+        [currentLangData.tableHeaders[0]]: i + 1,
+        [currentLangData.tableHeaders[1]]: r.barcode,
+        [currentLangData.tableHeaders[2]]: r.quantity,
+        [currentLangData.tableHeaders[3]]: r.unit,
+        [currentLangData.tableHeaders[4]]: r.description,
+        [currentLangData.tableHeaders[5]]: r.datetime || "",
+        [currentLangData.tableHeaders[6]]: r.status
+      }));
+      
+      const worksheet = XLSX.utils.json_to_sheet(exportData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, currentLangData.tableHeaders[1]);
+      
+      // Excel dosyasını binary olarak oluştur
+      const excelBinary = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      
+      // Binary'yi base64'e çevir (optimize edilmiş versiyon)
+      const excelBase64 = arrayBufferToBase64(excelBinary);
+      
+      // Kullanıcı ve cihaz bilgilerini topla
+      const userAgentData = {
+        device: navigator.userAgentData ? navigator.userAgentData.mobile ? 'mobile' : 'desktop' : 'unknown',
+        platform: navigator.platform,
+        language: navigator.language,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+      };
+      
+      // Power Automate'e gönderilecek JSON verisi
+      const payload = {
+        metadata: {
+          timestamp: new Date().toISOString(),
+          source: window.location.hostname,
+          language: navigator.language
+        },
+        headers: {
+          "User-Agent": navigator.userAgent,
+          "Accept-Language": navigator.language
+        },
+        body: {
+          to: mailTo,
+          subject: mailSubject,
+          message: mailBody,
+          attachment: {
+            filename: `${currentLangData.mailSubjectPlaceholder.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0,10)}.xlsx`,
+            content: excelBase64,
+            size: excelBinary.length,
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          },
+          userData: userAgentData
+        }
+      };
+      
+      console.log("Gönderilen veri:", payload); 
+      
+      // Hata ayıklama için
+      
+      const response = await fetch("https://prod-107.westeurope.logic.azure.com:443/workflows/d1cddc96e3a8441d814c1751c0fdad23/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=DHs479xtB9FY7hTxV7oKJkWeiL4qL0KyMtDPO1fNkwk", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+      
+      if(response.ok) {
+        alert(currentLangData.alertMessages.emailSent);
+        hideMailPopup();
+      } else {
+        const errorData = await response.text();
+        throw new Error(`${currentLangData.alertMessages.emailError} ${response.status} - ${errorData}`);
+      }
+    } catch (error) {
+      console.error("Mail gönderme hatası:", error);
+      alert(`${currentLangData.alertMessages.emailError}\n${error.message}`);
+    } finally {
+      sendBtn.innerHTML = originalText;
+      sendBtn.disabled = false;
+    }
+  }
+
+  // Binary array'i base64'e çevirme fonksiyonu (optimize edilmiş)
+  function arrayBufferToBase64(buffer) {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
+  }
+
   // Geliştirici araçlarını engelle
   document.addEventListener('contextmenu', e => e.preventDefault());
   document.addEventListener('keydown', e => {
@@ -1094,132 +1483,81 @@ transform:"none",
     });
   });
 
-// Mail popup'ını göster
-function showMailPopup() {
-    if(records.length === 0) {
-        alert("Gönderilecek kayıt bulunamadı!");
-        return;
-    }
-    
-    document.getElementById('mailPopup').style.display = 'flex';
-    document.getElementById('mailSubject').value = 'Barkod Sayım Raporu - ' + new Date().toLocaleDateString('tr-TR');
-}
+  // Yıl bilgisini otomatik ekle
+  document.getElementById('year').textContent = new Date().getFullYear();
 
-// Mail popup'ını gizle
-function hideMailPopup() {
-    document.getElementById('mailPopup').style.display = 'none';
-}
-
-// Mail gönderme fonksiyonu
-
-async function sendMail() {
-    const mailTo = document.getElementById('mailTo').value.trim();
-    const mailSubject = document.getElementById('mailSubject').value.trim();
-    const mailBody = document.getElementById('mailBody').value.trim();
+  // Dil değiştirme butonları (isteğe bağlı)
+  function addLanguageSwitcher() {
+    const langSwitcher = document.createElement('div');
+    langSwitcher.style.position = 'fixed';
+    langSwitcher.style.top = '10px';
+    langSwitcher.style.left = '10px';
+    langSwitcher.style.zIndex = '1000';
+    langSwitcher.style.display = 'flex';
+    langSwitcher.style.gap = '5px';
+    langSwitcher.style.background = 'rgba(255,255,255,0.8)';
+    langSwitcher.style.padding = '5px';
+    langSwitcher.style.borderRadius = '20px';
+    langSwitcher.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
     
-    if(!mailTo) {
-        alert("Lütfen alıcı e-posta adresini giriniz!");
-        return;
-    }
+    const languages = [
+      { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
+      { code: 'en', name: 'English', flag: '🇬🇧' },
+      { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+      { code: 'fr', name: 'Français', flag: '🇫🇷' }
+    ];
     
-    const sendBtn = document.querySelector('.mail-send-btn');
-    const originalText = sendBtn.innerHTML;
-    sendBtn.innerHTML = '<i class="bx bx-loader bx-spin"></i> Gönderiliyor...';
-    sendBtn.disabled = true;
+    languages.forEach(lang => {
+      const btn = document.createElement('button');
+      btn.textContent = lang.flag;
+      btn.title = lang.name;
+      btn.style.background = 'none';
+      btn.style.border = 'none';
+      btn.style.cursor = 'pointer';
+      btn.style.fontSize = '20px';
+      btn.style.padding = '2px';
+      btn.style.borderRadius = '50%';
+      btn.style.width = '30px';
+      btn.style.height = '30px';
+      btn.style.display = 'flex';
+      btn.style.alignItems = 'center';
+      btn.style.justifyContent = 'center';
+      btn.style.transition = 'all 0.2s';
+      
+      btn.addEventListener('mouseover', () => {
+        btn.style.transform = 'scale(1.1)';
+        btn.style.backgroundColor = '#4682b4';
+        btn.style.color = 'white';
+      });
+      
+      btn.addEventListener('mouseout', () => {
+        btn.style.transform = 'scale(1)';
+        btn.style.backgroundColor = 'transparent';
+        btn.style.color = 'inherit';
+      });
+      
+      btn.addEventListener('click', () => {
+        currentLangData = setPageLanguage(lang.code);
+        displayRecords();
+      });
+      
+      langSwitcher.appendChild(btn);
+    });
     
-    try {
-        // Excel dosyasını oluştur
-        const exportData = records.map((r, i) => ({
-            "Sıra": i + 1,
-            "Barkod": r.barcode,
-            "Miktar": r.quantity,
-            "Ölçü Birimi": r.unit,
-            "Açıklama": r.description,
-            "Tarih/Saat": r.datetime || "",
-            "Durum": r.status
-        }));
-        
-        const worksheet = XLSX.utils.json_to_sheet(exportData);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Barkodlar");
-        
-        // Excel dosyasını binary olarak oluştur
-        const excelBinary = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-        
-        // Binary'yi base64'e çevir (optimize edilmiş versiyon)
-        const excelBase64 = arrayBufferToBase64(excelBinary);
-        
-        // Kullanıcı ve cihaz bilgilerini topla
-        const userAgentData = {
-            device: navigator.userAgentData ? navigator.userAgentData.mobile ? 'mobile' : 'desktop' : 'unknown',
-            platform: navigator.platform,
-            language: navigator.language,
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-        };
-        
-        // Power Automate'e gönderilecek JSON verisi
-        const payload = {
-            metadata: {
-                timestamp: new Date().toISOString(),
-                source: window.location.hostname
-            },
-            headers: {
-                "User-Agent": navigator.userAgent,
-                "Accept-Language": navigator.language
-            },
-            body: {
-                to: mailTo,
-                subject: mailSubject,
-                message: mailBody,
-                attachment: {
-                    filename: `barkod_sayim_raporu_${new Date().toISOString().slice(0,10)}.xlsx`,
-                    content: excelBase64,
-                    size: excelBinary.length,
-                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                },
-                userData: userAgentData
-            }
-        };
-        
-        console.log("Gönderilen veri:", payload); // Hata ayıklama için
-        
-        const response = await fetch("https://prod-107.westeurope.logic.azure.com:443/workflows/d1cddc96e3a8441d814c1751c0fdad23/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=DHs479xtB9FY7hTxV7oKJkWeiL4qL0KyMtDPO1fNkwk", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        });
-        
-        if(response.ok) {
-            alert("E-posta başarıyla gönderildi!");
-            hideMailPopup();
-        } else {
-            const errorData = await response.text();
-            throw new Error(`Sunucu hatası: ${response.status} - ${errorData}`);
-        }
-    } catch (error) {
-        console.error("Mail gönderme hatası:", error);
-        alert(`E-posta gönderilirken bir hata oluştu:\n${error.message}`);
-    } finally {
-        sendBtn.innerHTML = originalText;
-        sendBtn.disabled = false;
-    }
-}
-
-// Binary array'i base64'e çevirme fonksiyonu (optimize edilmiş)
-function arrayBufferToBase64(buffer) {
-    let binary = '';
-    const bytes = new Uint8Array(buffer);
-    const len = bytes.byteLength;
-    for (let i = 0; i < len; i++) {
-        binary += String.fromCharCode(bytes[i]);
-    }
-    return window.btoa(binary);
-}
-  
+    document.body.appendChild(langSwitcher);
+  }
+  // Sayfa yüklendiğinde ayarları yükle
+  document.addEventListener('DOMContentLoaded', () => {
+    const preferredLanguage = localStorage.getItem('preferredLanguage') || detectLanguage();
+    currentLangData = setPageLanguage(preferredLanguage);
+    
+    displayRecords();
+    document.getElementById("quantityInput").setAttribute("inputmode", "numeric");
+    document.getElementById("autoCameraCheckbox").checked = autoCameraEnabled});
+    
+    // Dil değiştiriciyi ekle (isteğe bağlı)
+    // addLanguageSwitcher(); // Bu satırı kaldırırsanız dil butonları görünmez
+  addLanguageSwitcher();
 </script>
-
-
 </body>
 </html>
