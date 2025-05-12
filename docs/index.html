@@ -1,0 +1,8 @@
+<script>
+fetch("https://integration.idenfit.com/login?username=zehraauludag@gmail.com&password=Zehra.1992")
+  .then(r => r.json())
+  .then(data => {
+    document.body.innerHTML = `<pre>${JSON.stringify(data)}</pre>`;
+    // Power Automate bu URL'yi çağırarak token'ı alabilir
+  });
+</script>
