@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akıllı Veri Ayıklayıcı</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Boxicons (Icons) for social media icons and new button icons -->
+    <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Üste hizalama */
+            min-height: 100vh;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-size: 0.95rem;
+        }
+        .file-upload-label {
+            cursor: pointer;
+            background-color: #e0f2fe; /* Açık mavi */
+            border: 2px dashed #90cdf4; /* Orta mavi */
+            color: #2c5282; /* Koyu mavi metin */
+            padding: 0px; /* Artırılmış dolgu */
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        }
+        .file-upload-label:hover {
+            background-color: #bfdbfe; /* Hover'da daha açık mavi */
+            border-color: #63b3ed; /* Hover'da daha koyu mavi */
+        }
+        .file-upload-label input[type="file"] {
+            display: none;
+        }
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #3b82f6;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .message-box {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 20px;
+            width: 300px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            display: none; /* Varsayılan olarak gizli */
+            flex-direction: column;
+            gap: 15px;
+            animation: fadeIn 0.3s ease-out;
+        }
+        .message-box button {
+            background-color: #3b82f6;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .message-box button:hover {
+            background-color: #2563eb;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -60%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+
+        /* Social icons styling (as reference for new buttons) */
+        .social-icons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+        .social-link {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4682b4; /* Initial icon color */
+            font-size: 20px;
+            text-decoration: none !important;
+            transition: background-color 0.3s, transform 0.3s ease-in-out, color 0.3s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); /* subtle initial shadow */
+        }
+        .social-link:hover {
+            background-color: #4682b4; /* Background color changes on hover */
+            color: #fff; /* Icon color changes to white on hover */
+            transform: scale(1.15); /* Desired animation scale */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Larger shadow on hover */
+        }
+        .social-link:hover i {
+            transform: rotate(-10deg) scale(1.2);
+        }
+        .social-link[href*="linkedin"]:hover { background-color: #0077b5; }
+        .social-link[href*="wa.me"]:hover { background-color: #25D366; }
+        .social-link[href*="teams"]:hover { background-color: #6264A7; }
+        .social-link[href*="mailto"]:hover { background-color: #EA4335; }
+        .social-link[href*="tel"]:hover { background-color: #34B7F1; }
+        .social-link[href*="innovativesolutions.com.tr"]:hover { background-color: #ff8c00; }
+        .social-link[href*="logic.azure.com"]:hover { background-color: #3b5998; }
+
+        @media (max-width: 600px) {
+            .social-icons { gap: 5px; }
+            .social-link { width: 30px; height: 30px; font-size: 18px; }
+        }
+
+        /* Privacy Policy Popup Styles */
+        .privacy-popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .privacy-popup-content {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 90%; max-width: 600px;
+            padding: 30px;
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .privacy-popup-content h2 { font-size: 1.8rem; font-weight: 700; color: #1e40af; margin-bottom: 20px; text-align: center; }
+        .privacy-popup-content p { font-size: 0.95rem; color: #4b5563; line-height: 1.6; margin-bottom: 15px; }
+        .privacy-popup-content p:last-child { margin-bottom: 0; }
+        .privacy-popup-close-btn {
+            position: absolute; top: 15px; right: 15px;
+            background: none; border: none;
+            font-size: 1.8rem; color: #6b7280;
+            cursor: pointer; transition: color 0.2s ease;
+        }
+        .privacy-popup-close-btn:hover { color: #ef4444; }
+
+        /* Custom button styles to match social-link behavior */
+        .main-action-button {
+            /* Common styles for both buttons */
+            height: 48px; /* Height for text button */
+            padding: 0 20px; /* Horizontal padding for text buttons */
+            border-radius: 8px; /* Rounded corners for rectangular buttons */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700; /* Bold text */
+            text-decoration: none !important;
+            transition: background-color 0.3s, transform 0.3s ease-in-out, color 0.3s ease-in-out, border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); /* Subtle initial shadow */
+            cursor: pointer;
+            transform: scale(1); /* Initial state for animation */
+        }
+        .main-action-button:hover {
+            transform: scale(1.15); /* Apply same scale as social links */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Larger shadow on hover */
+        }
+
+        /* Specific styles for Extract Button */
+        #extractBtn.main-action-button {
+            background-color: transparent; /* No initial background */
+            color: #3b82f6; /* Initial blue text/icon color */
+            border: 2px solid #3b82f6; /* Initial blue border */
+            font-size: 1.1rem; /* Adjust font size for text */
+            min-width: 180px; /* Ensure a decent width for the text */
+        }
+        #extractBtn.main-action-button:hover {
+            background-color: #3b82f6; /* Blue background on hover */
+            color: #fff; /* White text/icon on hover */
+        }
+
+        /* Specific styles for Copy Button - icon only */
+        #copyBtn.main-action-button {
+            width: 36px; /* Match social-link size */
+            height: 36px;
+            border-radius: 50%; /* Make circular */
+            background-color: transparent; /* No initial background */
+            color: #22c55e; /* Initial green icon color */
+            border: 2px solid #22c55e; /* Initial green border */
+            font-size: 20px; /* Icon size - match social-link */
+            padding: 0; /* Remove padding for circular button */
+        }
+        #copyBtn.main-action-button:hover {
+            background-color: #22c55e; /* Green background on hover */
+            color: #fff; /* White icon on hover */
+        }
+
+        /* Specific styles for Clear Output Button - icon only, similar to copyBtn */
+        #clearOutputBtn.main-action-button {
+            width: 36px; /* Match social-link size */
+            height: 36px;
+            border-radius: 50%; /* Make circular */
+            background-color: transparent; /* No initial background */
+            color: #ef4444; /* Initial red icon color */
+            border: 2px solid #ef4444; /* Initial red border */
+            font-size: 20px; /* Icon size - match social-link */
+            padding: 0; /* Remove padding for circular button */
+        }
+        #clearOutputBtn.main-action-button:hover {
+            background-color: #ef4444; /* Red background on hover */
+            color: #fff; /* White icon on hover */
+        }
+
+
+        /* Disabled state - apply to all action buttons */
+        .main-action-button.disabled-state {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none; /* Disable hover effects when disabled */
+            background-color: transparent !important; /* Ensure background stays transparent or default when disabled */
+            color: #6b7280 !important; /* Grey out icons/text */
+            border-color: #6b7280 !important; /* Grey out border */
+            box-shadow: none !important; /* No shadow when disabled */
+            transform: none !important; /* No transform when disabled */
+        }
+
+        /* Header Digital Particle Animation Styles from provided code */
+        .header-animated {
+            position: relative;
+            overflow: hidden;
+            background-color: #3b82f6; /* Blue background as in your example */
+            padding: 0px; /* SET TO 0PX AS REQUESTED */
+        }
+        .header-animated canvas {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none; /* Prevent canvas from interfering with clicks */
+        }
+        /* Ensure text content is above the canvas */
+        .header-animated h1, .header-animated p { 
+            position: relative; 
+            z-index: 1; 
+            color: white; /* Ensure text is visible */
+            text-align: center;
+            padding: 5px; /* Apply padding to text elements if needed for spacing */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section with Particle Animation -->
+        <div class="bg-blue-500 text-white rounded-t-2xl header-animated">
+            <!-- Canvas for particle animation -->
+            <canvas id="headerCanvas"></canvas>
+            <h1 class="text-3xl font-bold mb-2">Akıllı Veri Ayıklayıcı</h1>
+            <p class="text-sm">
+                Görsel ve PDF belgelerinden metin ayıklayın. Tamamen gizli, hiçbir veri saklanmaz.
+            </p>
+        </div>
+
+        <!-- Dosya Giriş Bölümü -->
+        <div id="fileInputSection" class="input-section">
+            <label for="fileUpload" class="file-upload-label">
+                <i class="fas fa-cloud-upload-alt text-5xl mb-3"></i>
+                <span class="text-lg font-semibold">Görsel veya PDF Yüklemek İçin Buraya Tıklayın veya Sürükleyip Bırakın</span>
+                <span class="text-sm text-gray-600 mt-1">(JPG, PNG, GIF, PDF desteklenir)</span>
+                <input type="file" id="fileUpload" accept="image/*, application/pdf">
+            </label>
+            <img id="imagePreview" class="hidden mt-4 max-w-full h-auto rounded-lg shadow-md mx-auto" alt="Yüklenen Önizleme">
+            
+            <p id="fileNameDisplay" class="text-center text-gray-700 font-bold mt-3 hidden"></p>
+
+            <!-- Ana butonlar için esnek kapsayıcı -->
+            <div class="flex flex-col sm:flex-row gap-x-8 mt-4 w-full justify-between items-center">
+                <button id="extractBtn" class="main-action-button flex-shrink-0">
+                    <i class='bx bx-download mr-2 text-xl'></i> Veriyi Ayıkla 
+                    <span id="loadingSpinner" class="loading-spinner hidden"></span>
+                </button>
+                <div class="flex gap-x-4 ml-auto"> <!-- Sağdaki ikon butonlarını gruplamak ve sağa yaslamak için ml-auto eklendi -->
+                    <button id="copyBtn" class="main-action-button flex-shrink-0">
+                        <i class='bx bx-copy-alt text-xl'></i> <!-- bx-copy-alt kullanıldı -->
+                    </button>
+                    <button id="clearOutputBtn" class="main-action-button flex-shrink-0">
+                        <i class='bx bx-trash text-xl'></i> 
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <h4 class="text-xl font-bold text-gray-600 mt-6 mb-3">Ayıklanan Veri:</h4>
+        <textarea id="extractedData" readonly placeholder="Yüklediğiniz dosyaya göre ayıklanan metin burada görünecek..." class="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none"></textarea>
+
+        <!-- Özel Mesaj Kutusu -->
+        <div id="messageBox" class="message-box">
+            <p id="messageText" class="text-gray-800 text-center"></p>
+            <button id="closeMessageBox">Tamam</button>
+        </div>
+
+        <!-- Footer Section with Social Icons -->
+        <div class="bg-gray-50 px-8 py-4 border-t border-gray-100 text-sm text-gray-500 flex flex-col items-center rounded-b-2xl gap-2 mt-6">
+            <div class="social-icons">
+                <a href="https://www.linkedin.com/in/y%C4%B1lmaz%C3%B6zt%C3%BCrk?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" class="social-link" title="LinkedIn"><i class='bx bxl-linkedin'></i></a>
+                <a href="https://www.innovativesolutions.com.tr" class="social-link" title="Web Sitesi"><i class='bx bxl-edge'></i></a>
+                <a href="mailto:yilmaz.ozturk@outlook.com.tr" class="social-link" title="E-posta"><i class='bx bx-mail-send'></i></a>
+                <a href="tel:05321330110" class="social-link" title="Telefon"><i class='bx bxs-phone-call'></i></a>
+                <a href="https://teams.microsoft.com/l/chat/0/0?users=yilmaz.ozturk@outlook.com.tr" class="social-link" title="Microsoft Teams"><i class='bx bxl-microsoft-teams'></i></a>
+                <a href="https://wa.me/+905321330110?text=Merhaba!%20INNOVEXA%20olarak%20yenilikçi%20ve%20hızlı%20çözümler%20sunuyoruz.%20Size%20nasıl%C4%B1%20yard%C4%B1mc%C4%B1%20olabiliriz?" class="social-link" title="WhatsApp"><i class='bx bxl-whatsapp'></i></a>
+                <a href="https://www.innovativesolutions.com.tr/Kartvizit" class="social-link" title="Dijital Kartvizit"><i class='bx bx-id-card'></i></a>
+            </div>
+            <span>© <span id="currentYear"></span> Geleceğin iş çözümleriyle tanışın!</span>
+            <a href="#" class="text-blue-600 hover:underline" onclick="showPrivacyPolicyPopup(event)">Gizlilik Politikası</a>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Popup HTML Structure -->
+    <div id="privacyPolicyPopup" class="privacy-popup-overlay hidden" onclick="hidePrivacyPolicyPopupOutside(event)">
+        <div class="privacy-popup-content" onclick="event.stopPropagation()">
+            <button class="privacy-popup-close-btn" onclick="hidePrivacyPolicyPopup()">&times;</button>
+            <h2>Gizlilik Politikası</h2>
+            <p>
+                Bu veri ayıklama aracı, yüklediğiniz görsel veya PDF belgelerinden metin ayıklama işlemi için tasarlanmıştır. Bu süreçte **hiçbir şekilde kişisel veriniz, yüklediğiniz dosyanın içeriği veya ayıklanan metin tarafımızca saklanmaz, kaydedilmez veya üçüncü taraflarla paylaşılmaz.** Tüm işlemler tarayıcınız üzerinde anlık olarak gerçekleştirilir. Uygulama, herhangi bir veritabanına bağlantı kurmaz veya bulut depolama hizmetlerini kullanmaz.
+            </p>
+            <p>
+                Uygulamanın düzgün çalışabilmesi için kullanılan PDF.js kütüphanesi ve açık kaynaklı OCR teknolojisi (Tesseract.js) doğrudan tarayıcınızın belleğini kullanır. İşlem tamamlandığında veya sayfayı kapattığınızda, tüm geçici veriler silinir.
+            </p>
+            <p>
+                Bu Gizlilik Politikası, aracın çalışma prensibini ve veri güvenliği konusundaki taahhüdümüzü açıklamaktadır. Herhangi bir sorunuz için lütfen iletişim bilgilerimizi kullanarak bize ulaşmaktan çekinmeyin.
+            </p>
+        </div>
+    </div>
+
+    <!-- Hidden Canvas for Image Preprocessing -->
+    <canvas id="ocrCanvas" style="display:none;"></canvas>
+
+    <!-- PDF.js kütüphanesi - Ana betikten önce global olarak yüklenir -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <!-- Tesseract.js kütüphanesi - Ana betikten önce global olarak yüklenir -->
+    <script src='https://unpkg.com/tesseract.js@2.1.0/dist/tesseract.min.js'></script>
+
+    <!-- Ana betik -->
+    <script>
+        // pdfjsLib'e global olarak erişim, betik etiketi tarafından yüklendikten sonra
+        if (!window.pdfjsLib) {
+            console.error("pdfjsLib bulunamadı. Lütfen PDF.js yüklemesini kontrol edin.");
+        } else {
+            if (!window.pdfjsLib.GlobalWorkerOptions) {
+                window.pdfjsLib.GlobalWorkerOptions = {};
+            }
+            window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+        }
+
+        // Tesseract.js worker'ı ve durumu için global değişkenler
+        let tesseractWorker = null;
+        let isTesseractWorkerLoading = false;
+
+        // Özel mesaj kutusu işlevi
+        function showMessageBox(message) {
+            const messageBox = document.getElementById('messageBox');
+            const messageText = document.getElementById('messageText');
+            messageBox.style.display = 'flex';
+            messageText.textContent = message;
+        }
+
+        document.getElementById('closeMessageBox').addEventListener('click', () => {
+            document.getElementById('messageBox').style.display = 'none';
+        });
+
+        // Privacy Policy Popup functions
+        function showPrivacyPolicyPopup(event) {
+            event.preventDefault();
+            document.getElementById('privacyPolicyPopup').style.display = 'flex';
+        }
+        function hidePrivacyPolicyPopup() {
+            document.getElementById('privacyPolicyPopup').style.display = 'none';
+        }
+        function hidePrivacyPolicyPopupOutside(event) {
+            if (event.target.id === 'privacyPolicyPopup') {
+                hidePrivacyPolicyPopup();
+            }
+        }
+
+        // Elementler
+        const fileUpload = document.getElementById('fileUpload');
+        const imagePreview = document.getElementById('imagePreview');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const extractBtn = document.getElementById('extractBtn');
+        const extractedData = document.getElementById('extractedData');
+        const copyBtn = document.getElementById('copyBtn');
+        const clearOutputBtn = document.getElementById('clearOutputBtn'); // Çıktıyı temizleme butonu
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const ocrCanvas = document.getElementById('ocrCanvas');
+        const ctx = ocrCanvas.getContext('2d');
+
+        let selectedFile = null;
+        let fileType = null;
+
+        /**
+         * Butonların etkin/pasif durumunu ve stilini günceller.
+         */
+        function updateButtonStates() {
+            // Kopyala butonu durumu: extractedData'da metin varsa aktif, yoksa pasif
+            if (extractedData.value.trim().length === 0) {
+                copyBtn.disabled = true;
+                copyBtn.classList.add('disabled-state');
+            } else {
+                copyBtn.disabled = false;
+                copyBtn.classList.remove('disabled-state');
+            }
+
+            // Çıktıyı Temizle butonu durumu: extractedData'da metin varsa aktif, yoksa pasif
+            if (extractedData.value.trim().length === 0) {
+                clearOutputBtn.disabled = true;
+                clearOutputBtn.classList.add('disabled-state');
+            } else {
+                clearOutputBtn.disabled = false;
+                clearOutputBtn.classList.remove('disabled-state');
+            }
+
+            // Veriyi Ayıkla butonu durumu: dosya seçiliyse aktif, yoksa pasif
+            if (!selectedFile) {
+                extractBtn.disabled = true;
+                extractBtn.classList.add('disabled-state');
+            } else {
+                extractBtn.disabled = false;
+                extractBtn.classList.remove('disabled-state');
+            }
+        }
+
+        /**
+         * Dosya girişini sıfırlar ve ilgili UI elemanlarını gizler.
+         */
+        function resetFileInputAndOutput() {
+            selectedFile = null;
+            fileType = null;
+            fileUpload.value = '';
+            imagePreview.classList.add('hidden');
+            imagePreview.src = '';
+            fileNameDisplay.classList.add('hidden');
+            fileNameDisplay.textContent = '';
+            extractedData.value = ''; // Çıktı alanını da temizle
+            extractedData.placeholder = "Yüklediğiniz dosyaya göre ayıklanan metin burada görünecek...";
+            updateButtonStates(); // Tüm butonların durumunu güncelle
+        }
+
+        // Handle file selection (sürükle ve bırak dahil) yönetimi
+        fileUpload.addEventListener('change', (event) => {
+            selectedFile = event.target.files[0];
+            extractedData.value = ''; // Önceki çıktıyı temizle
+            imagePreview.classList.add('hidden'); // Varsayılan olarak görsel önizlemeyi gizle
+            imagePreview.src = ''; // Görsel kaynağını temizle
+            fileNameDisplay.classList.add('hidden'); // Varsayılan olarak dosya adı gösterimini gizle
+            fileNameDisplay.textContent = ''; // Dosya adını temizle
+            updateButtonStates(); // Dosya seçimi değiştiğinde butonları güncelle
+
+            if (selectedFile) {
+                fileNameDisplay.textContent = `Seçilen Dosya: ${selectedFile.name}`;
+                fileNameDisplay.classList.remove('hidden');
+
+                if (selectedFile.type.startsWith('image/')) {
+                    fileType = 'image';
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        imagePreview.src = e.target.result;
+                        imagePreview.classList.remove('hidden');
+                        extractedData.placeholder = "Görselden metin ayıklamak için 'Veriyi Ayıkla'ya tıklayın.";
+                    };
+                    reader.readAsDataURL(selectedFile);
+                } else if (selectedFile.type === 'application/pdf') {
+                    fileType = 'pdf';
+                    extractedData.placeholder = "PDF'ten metin ayıklamak için 'Veriyi Ayıkla'ya tıklayın.";
+                } else {
+                    fileType = null;
+                    extractedData.placeholder = "Desteklenmeyen dosya türü. Lütfen bir görsel (JPG, PNG, GIF) veya PDF yükleyin.";
+                    showMessageBox('Desteklenmeyen dosya türü. Lütfen bir görsel (JPG, PNG, GIF) veya PDF yükleyin.');
+                    fileNameDisplay.classList.add('hidden');
+                }
+            } else {
+                fileType = null;
+                extractedData.placeholder = "Yüklediğiniz dosyaya göre ayıklanan metin burada görünecek...";
+            }
+            updateButtonStates(); // Dosya seçimi durumu değiştikçe butonları tekrar güncelle
+        });
+
+        // Dosya yükleme için sürükle ve bırak
+        const fileUploadLabel = document.querySelector('.file-upload-label');
+        fileUploadLabel.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            fileUploadLabel.classList.add('border-blue-500', 'bg-blue-50');
+        });
+
+        fileUploadLabel.addEventListener('dragleave', (event) => {
+            event.preventDefault();
+            fileUploadLabel.classList.remove('border-blue-500', 'bg-blue-50');
+        });
+
+        fileUploadLabel.addEventListener('drop', (event) => {
+            event.preventDefault();
+            fileUploadLabel.classList.remove('border-blue-500', 'bg-blue-50');
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                fileUpload.files = files;
+                fileUpload.dispatchEvent(new Event('change'));
+            }
+        });
+
+        // Ana Ayıklama Butonu Mantığı
+        extractBtn.addEventListener('click', async () => {
+            if (!selectedFile) {
+                showMessageBox('Lütfen önce bir görsel veya PDF dosyası seçin!');
+                return;
+            }
+
+            loadingSpinner.classList.remove('hidden');
+            extractBtn.disabled = true;
+            extractBtn.classList.add('disabled-state'); // Ayıklama sırasında butonu pasif yap
+            extractedData.value = 'Dosya işleniyor... Lütfen bekleyin.';
+            updateButtonStates(); // Ayıklama başladığında kopyala ve temizle butonlarını pasif yap
+
+            try {
+                if (fileType === 'image') {
+                    await extractTextFromImage();
+                } else if (fileType === 'pdf') {
+                    await extractTextFromPdf();
+                } else {
+                    showMessageBox('Desteklenmeyen dosya türü veya dosya seçilmedi.');
+                }
+            } catch (error) {
+                console.error("Veri ayıklama hatası:", error);
+                extractedData.value = "Veri ayıklanırken bir hata oluştu: " + error.message;
+            } finally {
+                loadingSpinner.classList.add('hidden');
+                extractBtn.disabled = false;
+                extractBtn.classList.remove('disabled-state'); // Ayıklama bitince butonu aktif yap
+                updateButtonStates(); // Ayıklama bittiğinde tüm butonların durumunu güncelle
+            }
+        });
+
+        // "Çıktıyı Temizle" butonu tıklama olayı
+        clearOutputBtn.addEventListener('click', () => {
+            resetFileInputAndOutput(); // Hem dosya girişini hem de çıktıyı temizle
+            // showMessageBox('Dosya seçimi ve ayıklanan veri alanı temizlendi.'); // Bu satır kaldırıldı
+        });
+
+        /**
+         * Görseli Tesseract.js için ön işleme tabi tutar (büyütme, gürültü azaltma, keskinleştirme, gri tonlama, Otsu binarizasyonu).
+         * @param {HTMLImageElement} img - İşlenecek görsel elementi.
+         * @param {number} scaleFactor - Görselin büyütüleceği faktör (örn. 2, 3, 4).
+         * @returns {HTMLCanvasElement} İşlenmiş görseli içeren canvas.
+         */
+        function processImageForOCR(img, scaleFactor = 4) { // Upscale to 4x for detail and performance balance
+            const originalWidth = img.naturalWidth;
+            const originalHeight = img.naturalHeight;
+
+            ocrCanvas.width = originalWidth * scaleFactor;
+            ocrCanvas.height = originalHeight * scaleFactor;
+
+            ctx.drawImage(img, 0, 0, ocrCanvas.width, ocrCanvas.height);
+
+            let imageData = ctx.getImageData(0, 0, ocrCanvas.width, ocrCanvas.height);
+            let data = imageData.data;
+
+            // Step 1: Apply Median Filter (Noise Reduction)
+            const medianFilterRadius = 1; // 3x3 kernel
+            const tempMedianData = new Uint8ClampedArray(data.length);
+            for (let i = 0; i < data.length; i += 4) {
+                tempMedianData[i] = data[i];
+                tempMedianData[i + 1] = data[i + 1];
+                tempMedianData[i + 2] = data[i + 2];
+                tempMedianData[i + 3] = data[i + 3];
+            }
+
+            for (let y = medianFilterRadius; y < ocrCanvas.height - medianFilterRadius; y++) {
+                for (let x = medianFilterRadius; x < ocrCanvas.width - medianFilterRadius; x++) {
+                    const pixelsR = [];
+                    const pixelsG = [];
+                    const pixelsB = [];
+
+                    for (let ky = -medianFilterRadius; ky <= medianFilterRadius; ky++) {
+                        for (let kx = -medianFilterRadius; kx <= medianFilterRadius; kx++) {
+                            const pixelX = x + kx;
+                            const pixelY = y + ky;
+                            const srcIndex = (pixelY * ocrCanvas.width + pixelX) * 4;
+                            pixelsR.push(tempMedianData[srcIndex]);
+                            pixelsG.push(tempMedianData[srcIndex + 1]);
+                            pixelsB.push(tempMedianData[srcIndex + 2]);
+                        }
+                    }
+
+                    pixelsR.sort((a, b) => a - b);
+                    pixelsG.sort((a, b) => a - b);
+                    pixelsB.sort((a, b) => a - b);
+
+                    const medianIndex = Math.floor(pixelsR.length / 2);
+                    const destIndex = (y * ocrCanvas.width + x) * 4;
+
+                    data[destIndex] = pixelsR[medianIndex];
+                    data[destIndex + 1] = pixelsG[medianIndex];
+                    data[destIndex + 2] = pixelsB[medianIndex];
+                }
+            }
+            ctx.putImageData(imageData, 0, 0); // Update canvas with median filtered data
+            imageData = ctx.getImageData(0, 0, ocrCanvas.width, ocrCanvas.height);
+            data = imageData.data; // Get updated data after median filter
+
+            // Step 2: Apply Sharpening Filter
+            const sharpenMatrix = [
+                0, -1,  0,
+                -1,  5, -1,
+                0, -1,  0
+            ];
+            
+            const tempSharpenData = ctx.createImageData(ocrCanvas.width, ocrCanvas.height);
+            const tempDataBytes = tempSharpenData.data; // Use a new temp data array for sharpening
+
+            for (let y = 1; y < ocrCanvas.height - 1; y++) {
+                for (let x = 1; x < ocrCanvas.width - 1; x++) {
+                    let rSum = 0;
+                    let gSum = 0;
+                    let bSum = 0;
+
+                    for (let ky = -1; ky <= 1; ky++) {
+                        for (let kx = -1; kx <= 1; kx++) {
+                            const pixelX = x + kx;
+                            const pixelY = y + ky;
+                            const srcIndex = (pixelY * ocrCanvas.width + pixelX) * 4;
+                            const matrixVal = sharpenMatrix[ (ky + 1) * 3 + (kx + 1) ];
+
+                            rSum += data[srcIndex] * matrixVal;
+                            gSum += data[srcIndex + 1] * matrixVal;
+                            bSum += data[srcIndex + 2] * matrixVal;
+                        }
+                    }
+
+                    const destIndex = (y * ocrCanvas.width + x) * 4;
+                    tempDataBytes[destIndex] = Math.min(255, Math.max(0, rSum));
+                    tempDataBytes[destIndex + 1] = Math.min(255, Math.max(0, gSum));
+                    tempDataBytes[destIndex + 2] = Math.min(255, Math.max(0, bSum));
+                    tempDataBytes[destIndex + 3] = data[destIndex + 3]; // Alpha kanalı
+                }
+            }
+            data.set(tempDataBytes); // Copy sharpened data back to main data array
+
+
+            // Step 3: Grayscale Conversion (Luma value) and Otsu's Binarization
+            const grayData = new Uint8ClampedArray(data.length / 4); 
+            for (let i = 0, j = 0; i < data.length; i += 4, j++) {
+                const r = data[i];
+                const g = data[i + 1];
+                const b = data[i + 2];
+                const gray = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+                grayData[j] = gray;
+
+                data[i] = gray;     // Red
+                data[i + 1] = gray; // Green
+                data[i + 2] = gray; // Blue
+            }
+
+            // Otsu's Method for Automatic Thresholding
+            function getOtsuThreshold(pixels) {
+                const histogram = new Array(256).fill(0);
+                for (let i = 0; i < pixels.length; i++) {
+                    histogram[pixels[i]]++;
+                }
+
+                let sum = 0;
+                for (let i = 0; i < 256; i++) {
+                    sum += i * histogram[i];
+                }
+
+                let sumB = 0; 
+                let wB = 0;   
+                let wF = 0;   
+                let mB = 0;   
+                let mF = 0;   
+                let max = 0;  
+                let threshold = 0;
+
+                for (let i = 0; i < 256; i++) {
+                    wB += histogram[i];
+                    if (wB === 0) continue;
+                    wF = pixels.length - wB; 
+                    if (wF === 0) break;
+
+                    sumB += (i * histogram[i]);
+                    mB = sumB / wB;
+                    mF = (sum - sumB) / wF;
+
+                    const between = wB * wF * ((mB - mF) * (mB - mF));
+                    if (between > max) {
+                        max = between;
+                        threshold = i;
+                    }
+                }
+                return threshold;
+            }
+
+            const otsuThreshold = getOtsuThreshold(grayData);
+            
+            // 4. Binarization using Otsu threshold
+            for (let i = 0; i < data.length; i += 4) {
+                const gray = data[i];
+                const color = gray < otsuThreshold ? 0 : 255;
+                
+                data[i] = color;
+                data[i + 1] = color;
+                data[i + 2] = color;
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+
+            return ocrCanvas;
+        }
+
+        // Görselden Metin Ayıklama (Tesseract.js kullanarak)
+        async function extractTextFromImage() {
+            extractedData.value = 'Görsel işleniyor ve metin ayıklanıyor... (Bu işlem, OCR motorunun ve dil paketlerinin ilk yüklenmesinde biraz zaman alabilir)';
+            try {
+                if (!tesseractWorker) {
+                    isTesseractWorkerLoading = true;
+                    extractedData.value += '\nOCR motoru yükleniyor ve dil paketleri indiriliyor... Lütfen bekleyin.';
+                    tesseractWorker = await Tesseract.createWorker({ 
+                        logger: m => { 
+                            if (m.status === 'recognizing') {
+                                extractedData.value = `Metin ayıklanıyor: %${(m.progress * 100).toFixed(0)}`;
+                            } else if (m.status === 'loading data') {
+                                extractedData.value = `Dil verileri yükleniyor: %${(m.progress * 100).toFixed(0)}`;
+                            } else if (m.status === 'initializing') {
+                                extractedData.value = `Motor başlatılıyor: %${(m.progress * 100).toFixed(0)}`;
+                            } else {
+                                extractedData.value = `İşlem: ${m.status}`;
+                            }
+                        }
+                    });
+                    await tesseractWorker.load();
+                    await tesseractWorker.loadLanguage('tur'); // Sadece Türkçe dil paketi
+                    await tesseractWorker.initialize('tur'); // Sadece Türkçe olarak başlat
+                    isTesseractWorkerLoading = false;
+                    extractedData.value = 'Görsel işleniyor ve metin ayıklanıyor...'; 
+                }
+
+                const processedCanvas = await new Promise(resolve => {
+                    const img = new Image();
+                    img.onload = () => resolve(processImageForOCR(img, 4)); // 4 kat büyütme kullanılıyor
+                    img.src = imagePreview.src;
+                });
+                
+                // Tesseract.js'e gönderilecek seçenekler - AGRESİF SÖZLÜK KAPATMA
+                const ocrOptions = {
+                    tessedit_pageseg_mode: Tesseract.PSM.AUTO_OSD, // Otomatik sayfa segmentasyonu ve yön/betik algılama
+                    preserve_interword_spaces: '1', // Kelimeler arası boşlukları koru
+                    oem: Tesseract.OEM.LSTM_ONLY, // Yalnızca LSTM motorunu kullan
+                    
+                    // ***** ÇOK ÖNEMLİ: Dil modelinin metin üzerinde düzeltme yapmasını engellemek için anahtar ayarlar *****
+                    'load_system_dawg': '0', // Sistem sözlüğünü yükleme (kelime düzeltmelerini engeller)
+                    'load_freq_dawg': '0',   // Frekans sözlüğünü yükleme (kelime düzeltmelerini engeller)
+                    'tessedit_ambigs_verbosity': '0', // Belirsizlik raporlamasını azalt (içsel karar verme üzerinde etkili olabilir)
+                    'use_dict_for_assoc': '0', // İlişkilendirme için sözlüğü kullanma (düzeltmeleri engeller)
+                    'language_model_consistency_norm_cost': '0', // Dil modeli tutarlılığı maliyetini sıfırla (düzeltmeleri engeller)
+                    'language_model_viterbi_list_size': '0', // Viterbi aramasını kısıtla (daha az düzeltme)
+                    'chop_debug': '0', // Chop hata ayıklamayı kapat (performans)
+                    'debug_file': '/dev/null', // Hata ayıklama dosyalarını engelle (performans)
+
+                    // Karakter kısıtlamalarını temizle (her şeyi okumaya çalış)
+                    'tessedit_char_blacklist': '', 
+                    'tessedit_char_whitelist': '', 
+                };
+
+                const { data: { text } } = await tesseractWorker.recognize(processedCanvas, ocrOptions);
+                extractedData.value = text.trim();
+
+                if (text.trim() === '') {
+                    showMessageBox('Görselden metin ayıklanamadı. Belge boş olabilir, çok düşük çözünürlüklü olabilir veya taranmış bir görsel içeriyor olabilir. Daha iyi sonuçlar için görselin yüksek çözünürlüklü ve net olduğundan emin olun.');
+                }
+            } catch (error) {
+                console.error("Görsel OCR hatası:", error);
+                extractedData.value = "Veri ayıklanırken bir hata oluştu: " + error.message;
+            } finally {
+                // Tesseract worker'ını sonlandırma ihtiyacı yok, böylece ardışık işlemler daha hızlı olur
+            }
+        }
+
+        // PDF'ten Metin Ayıklama (PDF.js kullanarak)
+        async function extractTextFromPdf() {
+            try {
+                const arrayBuffer = await selectedFile.arrayBuffer();
+                const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                let fullText = '';
+                const LINE_GROUP_TOLERANCE = 5;
+                const SPACE_UNIT = 5;
+
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    
+                    const textItems = textContent.items;
+
+                    if (textItems.length === 0) {
+                        continue;
+                    }
+
+                    const lines = [];
+                    let currentLineY = -1;
+                    let currentLineItems = [];
+
+                    textItems.sort((a, b) => {
+                        const yA = a.transform[5];
+                        const yB = b.transform[5];
+                        const xA = a.transform[4];
+                        const xB = b.transform[4];
+
+                        if (Math.abs(yA - yB) < LINE_GROUP_TOLERANCE) {
+                            return xA - xB;
+                        }
+                        return yB - yA;
+                    });
+
+                    for (const item of textItems) {
+                        const itemY = item.transform[5];
+
+                        if (currentLineY === -1 || Math.abs(itemY - currentLineY) > LINE_GROUP_TOLERANCE) {
+                            if (currentLineItems.length > 0) {
+                                currentLineItems.sort((a, b) => a.transform[4] - b.transform[4]);
+                                let lineText = '';
+                                let lastItemEndX = -1;
+                                for (const lineItem of currentLineItems) {
+                                    const currentItemStartX = lineItem.transform[4];
+                                    if (lastItemEndX !== -1) {
+                                        const spaceNeeded = currentItemStartX - lastItemEndX;
+                                        const minSpaces = Math.floor(spaceNeeded / SPACE_UNIT);
+                                        
+                                        if (minSpaces > 0) {
+                                            lineText += ' '.repeat(minSpaces);
+                                        } else if (spaceNeeded > 0) {
+                                            lineText += ' ';
+                                        }
+                                    }
+                                    lineText += lineItem.str;
+                                    lastItemEndX = currentItemStartX + lineItem.width;
+                                }
+                                lines.push(lineText.trim());
+                            }
+                            currentLineItems = [item];
+                            currentLineY = itemY;
+                        } else {
+                            currentLineItems.push(item);
+                        }
+                    }
+
+                    if (currentLineItems.length > 0) {
+                        currentLineItems.sort((a, b) => a.transform[4] - b.transform[4]);
+                        let lineText = '';
+                        let lastItemEndX = -1;
+                        for (const lineItem of currentLineItems) {
+                            const currentItemStartX = lineItem.transform[4];
+                            if (lastItemEndX !== -1) {
+                                const spaceNeeded = currentItemStartX - lastItemEndX;
+                                const minSpaces = Math.floor(spaceNeeded / SPACE_UNIT);
+                                
+                                if (minSpaces > 0) {
+                                    lineText += ' '.repeat(minSpaces);
+                                } else if (spaceNeeded > 0) {
+                                    lineText += ' ';
+                                }
+                            }
+                            lineText += lineItem.str;
+                            lastItemEndX = currentItemStartX + lineItem.width;
+                        }
+                        lines.push(lineText.trim());
+                    }
+                    
+                    fullText += lines.join('\n') + '\n\n';
+                }
+                extractedData.value = fullText.trim();
+                if (fullText.trim() === '') {
+                    showMessageBox('PDF belgesinden metin ayıklanamadı. Belge taranmış bir görsel içerebilir veya boş olabilir.');
+                }
+                updateButtonStates(); // Metin ayıklandıktan sonra butonların durumunu güncelle
+            } catch (error) {
+                throw new Error("PDF işleme hatası: " + error.message);
+            }
+        }
+
+        // Ayıklanan Veriyi Kopyala
+        copyBtn.addEventListener('click', () => {
+            if (extractedData.value) {
+                extractedData.select();
+                try {
+                    document.execCommand('copy');
+                } catch (err) {
+                    console.error('Kopyalama hatası:', err);
+                }
+            }
+        });
+
+        // Sayfa yüklendiğinde footer'daki yılı ve butonların başlangıç durumunu ayarla
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentYearSpan = document.getElementById('currentYear');
+            if (currentYearSpan) {
+                currentYearSpan.textContent = new Date().getFullYear();
+            }
+            updateButtonStates(); // Sayfa yüklendiğinde tüm butonların başlangıç durumunu ayarla
+
+            // Header Canvas Particle Animation
+            const canvas = document.getElementById('headerCanvas');
+            const ctx = canvas.getContext('2d');
+            const header = document.querySelector('.header-animated');
+            let particles = [];
+            let animationFrameId;
+
+            function resizeCanvas() {
+                canvas.width = header.clientWidth;
+                canvas.height = header.clientHeight;
+                initParticles();
+            }
+
+            function Particle(x, y, radius, color, speedX, speedY) {
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+                this.color = color;
+                this.speedX = speedX;
+                this.speedY = speedY;
+            }
+
+            Particle.prototype.draw = function() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+
+            Particle.prototype.update = function() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x + this.radius > canvas.width || this.x - this.radius < 0) {
+                    this.speedX = -this.speedX;
+                }
+                if (this.y + this.radius > canvas.height || this.y - this.radius < 0) {
+                    this.speedY = -this.speedY;
+                }
+            }
+
+            function initParticles() {
+                particles = [];
+                const numParticles = 40;
+                for (let i = 0; i < numParticles; i++) {
+                    const radius = Math.random() * 1.5 + 0.5;
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * canvas.height;
+                    const speedX = (Math.random() - 0.5) * 0.5;
+                    const speedY = (Math.random() - 0.5) * 0.5;
+                    const color = `rgba(255, 255, 255, ${Math.random() * 0.4 + 0.1})`;
+                    particles.push(new Particle(x, y, radius, color, speedX, speedY));
+                }
+            }
+
+            function connectParticles() {
+                let opacityValue = 1;
+                for (let a = 0; a < particles.length; a++) {
+                    for (let b = a; b < particles.length; b++) {
+                        const distance = Math.sqrt(
+                            ((particles[a].x - particles[b].x) * (particles[a].x - particles[b].x)) +
+                            ((particles[a].y - particles[b].y) * (particles[a].y - particles[b].y))
+                        );
+
+                        if (distance < 100) {
+                            opacityValue = 1 - (distance / 100);
+                            ctx.strokeStyle = `rgba(255, 255, 255, ${opacityValue})`;
+                            ctx.lineWidth = 0.5;
+                            ctx.beginPath();
+                            ctx.moveTo(particles[a].x, particles[a].y);
+                            ctx.lineTo(particles[b].x, particles[b].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            function animate() {
+                animationFrameId = requestAnimationFrame(animate);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+                }
+                connectParticles();
+            }
+
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+            animate();
+        });
+    </script>
+</body>
+</html>
