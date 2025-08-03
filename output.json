@@ -1,0 +1,5 @@
+- name: Save scraped data
+  uses: actions/upload-artifact@v4
+  with:
+    name: scraped-data
+    path: output.json
