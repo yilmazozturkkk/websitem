@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "sendData.js",
   "dependencies": {
+    "axios": "^1.6.8",
     "node-fetch": "^2.6.1",
     "puppeteer": "^21.3.8"
   }
