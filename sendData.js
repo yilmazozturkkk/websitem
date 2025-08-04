@@ -1,3 +1,7 @@
+if (typeof File === 'undefined') {
+  global.File = class File {};
+}
+
 const axios = require("axios");
 const cheerio = require("cheerio");
 
