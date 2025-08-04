@@ -21,7 +21,7 @@ async function getGidenUcusBilgileri() {
     const rows = Array.from(document.querySelectorAll('#flightListTable tbody tr'));
     return rows.map(row => {
       const cols = row.querySelectorAll('td');
-
+ if (cols.length < 9) return null; 
       const havaYoluLink = cols[3].querySelector('a');
       let havaYoluIsmi = '';
       let havaYoluLogo = '';
@@ -45,6 +45,7 @@ async function getGidenUcusBilgileri() {
         aciklama: cols[7]?.textContent.trim() || '',
         ekle: cols[8]?.textContent.trim() || ''
       };
+       }).filter(item => item !== null);
     });
   });
 
