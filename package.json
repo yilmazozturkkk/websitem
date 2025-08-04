@@ -1,10 +1,13 @@
 {
-  "name": "esenboga-flight-scraper",
+  "name": "esenboga-ucus-scraper",
   "version": "1.0.0",
+  "description": "Esenboğa Havalimanı uçuş bilgilerini çekip Power Automate'e gönderir.",
   "main": "sendData.js",
-  "license": "MIT",
+  "scripts": {
+    "start": "node sendData.js"
+  },
   "dependencies": {
-    "axios": "^1.0.0",
-    "puppeteer": "^20.0.0"
+    "axios": "^1.6.0",
+    "cheerio": "^1.0.0-rc.12"
   }
 }
