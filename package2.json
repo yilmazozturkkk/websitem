@@ -1,0 +1,9 @@
+{
+  "name": "ucus-verisi-gonderici",
+  "version": "1.0.0",
+  "main": "sendData.js",
+  "dependencies": {
+    "node-fetch": "^2.6.1",
+    "puppeteer": "^21.3.8"
+  }
+}
