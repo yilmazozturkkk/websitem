@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 const fetch = require("node-fetch");
 
-const webhookUrl = "https://prod-252.westeurope.logic.azure.com:443/workflows/..."; // senin Power Automate URL'in
+const webhookUrl = "https://prod-168.westeurope.logic.azure.com:443/workflows/84d44977a58842489a1bb6ce087b09e8/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=kJVn8j0cQxlwyw6J1OqMhSjWON5BrRkgT8OlLSHv5sk"; // senin Power Automate URL'in
 
 (async () => {
   const browser = await puppeteer.launch({ headless: "new" });
