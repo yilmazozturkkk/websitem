@@ -1,55 +1,35 @@
-const fetch = require('node-fetch');
-const { parse } = require('node-html-parser');
+const puppeteer = require('puppeteer');
 
-// Power Automate webhook URL'in buraya
-const webhookUrl = 'https://prod-123.westeurope.logic.azure.com:443/workflows/xxx/triggers/manual/paths/invoke/...';
-
-async function getUcusBilgileri() {
-  const url = 'https://esenbogaairport.com/tr-TR/ucus-bilgileri/giden-ucuslar';
-  const response = await fetch(url);
-  const html = await response.text();
-
-  const root = parse(html);
-  const table = root.querySelector('.flight-table tbody');
-
-  if (!table) {
-    throw new Error("Uçuş tablosu bulunamadı");
-  }
-
-  const rows = table.querySelectorAll('tr');
-  const ucuslar = [];
-
-  rows.forEach(row => {
-    const cells = row.querySelectorAll('td');
-    if (cells.length < 6) return;
-
-    ucuslar.push({
-      saat: cells[0].text.trim(),
-      sefer: cells[1].text.trim(),
-      havayolu: cells[2].text.trim(),
-      varis: cells[3].text.trim(),
-      durum: cells[4].text.trim(),
-      kapi: cells[5].text.trim()
-    });
+(async () => {
+  const browser = await puppeteer.launch({
+    headless: "new",
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
 
-  return ucuslar;
-}
+  const page = await browser.newPage();
+  await page.goto('https://esenbogaairport.com/tr-TR/ucus-bilgileri/giden-ucuslar', {
+    waitUntil: 'networkidle0',
+    timeout: 0
+  });
 
-async function main() {
-  try {
-    const ucusListesi = await getUcusBilgileri();
+  // Tablo yüklensin diye bekle
+  await page.waitForSelector('#flightListTable tbody tr');
 
-    const response = await fetch(webhookUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ucusListesi })
+  // Veriyi çek
+  const flights = await page.evaluate(() => {
+    const rows = Array.from(document.querySelectorAll('#flightListTable tbody tr'));
+    return rows.map(row => {
+      const cols = row.querySelectorAll('td');
+      return {
+        tarih: cols[0]?.textContent.trim() || '',
+        planliSaat: cols[1]?.textContent.trim() || '',
+        tahminiSaat: cols[2]?.textContent.trim() || '',
+        havaYolu: cols[3]?.textContent.trim() || '',
+        gidecegiYer: cols[4]?.textContent.trim() || '',
+        ucusNumarasi: cols[5]?.textContent.trim() || '',
+        checkIn: cols[6]?.textContent.trim() || '',
+        aciklama: cols[7]?.textContent.trim() || '',
+        ekle: cols[8]?.textContent.trim() || ''
+      };
     });
-
-    console.log('Power Automate yanıt:', await response.text());
-  } catch (error) {
-    console.error('Hata:', error.message);
-  }
-}
-
-main();
+  });
