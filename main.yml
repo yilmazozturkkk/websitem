@@ -13,17 +13,13 @@ jobs:
       - name: Repo'yu klonla
         uses: actions/checkout@v3
 
-      - name: Node.js 20 kur
+      - name: Node.js kur
         uses: actions/setup-node@v3
         with:
-          node-version: '20'  # Kesin sürüm belirtmek için '20.18.1' de kullanabilirsiniz
-          cache: 'npm'
-          cache-dependency-path: 'package-lock.json'
+          node-version: '18'
 
       - name: Bağımlılıkları kur
-        run: |
-          npm ci --no-audit
-          npm remove undici --save  # Undici'yi kaldır
+        run: npm install
 
       - name: Veriyi çek ve gönder
         run: node sendData.js
