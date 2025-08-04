@@ -1,64 +1,54 @@
-const puppeteer = require('puppeteer');
-const fetch = require('node-fetch');
+const axios = require("axios");
+const cheerio = require("cheerio");
 
-async function getUcusBilgileri() {
-  const browser = await puppeteer.launch({
-    headless: "new",
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
-  });
+// 🔁 Ortak fonksiyon
+async function ucuslariGetir(url) {
+  const response = await axios.get(url);
+  const $ = cheerio.load(response.data);
 
-  const page = await browser.newPage();
-  await page.goto('https://esenbogaairport.com/tr-TR/ucus-bilgileri/giden-ucuslar', {
-    waitUntil: 'networkidle0',
-    timeout: 0
-  });
+  const tablo = $("table.flight-table tbody");
+  if (tablo.length === 0) throw new Error("Uçuş tablosu bulunamadı");
 
-  // Tablo yüklensin
-  await page.waitForSelector('#flightListTable tbody tr');
+  const veriler = [];
+  tablo.find("tr").each((i, row) => {
+    const kolonlar = $(row).find("td");
+    if (kolonlar.length === 0) return;
 
-  // Verileri çek
-  const flights = await page.evaluate(() => {
-    const rows = Array.from(document.querySelectorAll('#flightListTable tbody tr'));
-    return rows.map(row => {
-      const cols = row.querySelectorAll('td');
-      return {
-        tarih: cols[0]?.textContent.trim() || '',
-        planliSaat: cols[1]?.textContent.trim() || '',
-        tahminiSaat: cols[2]?.textContent.trim() || '',
-        havaYolu: cols[3]?.textContent.trim() || '',
-        gidecegiYer: cols[4]?.textContent.trim() || '',
-        ucusNumarasi: cols[5]?.textContent.trim() || '',
-        checkIn: cols[6]?.textContent.trim() || '',
-        aciklama: cols[7]?.textContent.trim() || '',
-        ekle: cols[8]?.textContent.trim() || ''
-      };
+    veriler.push({
+      tarih: $(kolonlar[0]).text().trim(),
+      planliSaat: $(kolonlar[1]).text().trim(),
+      tahminiSaat: $(kolonlar[2]).text().trim(),
+      havaYolu: $(kolonlar[3]).text().trim(),
+      gidecegiYer: $(kolonlar[4]).text().trim(),
+      ucusNumarasi: $(kolonlar[5]).text().trim(),
+      checkIn: $(kolonlar[6]).text().trim(),
+      aciklama: $(kolonlar[7]).text().trim(),
+      ekle: $(kolonlar[8]).text().trim(),
     });
   });
 
-  await browser.close();
-  return flights;
+  return veriler;
 }
 
-// ✅ Webhook'a gönderme kısmı
-async function sendToWebhook(data) {
-  const response = await fetch('https://prod-168.westeurope.logic.azure.com:443/workflows/84d44977a58842489a1bb6ce087b09e8/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=kJVn8j0cQxlwyw6J1OqMhSjWON5BrRkgT8OlLSHv5sk', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ flights: data })
-  });
+// 🔗 Esenboğa URL’leri
+const gelenURL = "https://esenbogaairport.com/tr-TR/ucus-bilgileri/gelen-ucuslar";
+const gidenURL = "https://esenbogaairport.com/tr-TR/ucus-bilgileri/giden-ucuslar";
 
-  const result = await response.text();
-  console.log('Webhook yanıtı:', result);
-}
+// 🚀 Ana fonksiyon
+(async () => {
+  try {
+    const gidenUcuslar = await ucuslariGetir(gidenURL);
+    const gelenUcuslar = await ucuslariGetir(gelenURL);
 
-getUcusBilgileri()
-  .then(data => {
-    if (data.length === 0) {
-      throw new Error("Hiç uçuş bilgisi çekilemedi.");
-    }
-    console.log(`Toplam uçuş verisi: ${data.length}`);
-    return sendToWebhook(data);
-  })
-  .catch(err => {
-    console.error('Hata:', err.message);
-  });
+    const payload = {
+      flights_departure: gidenUcuslar,
+      flights_arrival: gelenUcuslar,
+    };
+
+    // 📤 Power Automate URL'ine gönder
+    const response = await axios.post("https://prod-168.westeurope.logic.azure.com:443/workflows/84d44977a58842489a1bb6ce087b09e8/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=kJVn8j0cQxlwyw6J1OqMhSjWON5BrRkgT8OlLSHv5sk", payload);
+    console.log("Power Automate’e gönderildi:", response.status);
+  } catch (error) {
+    console.error("Hata:", error.message);
+  }
+})();
