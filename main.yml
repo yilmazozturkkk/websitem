@@ -16,10 +16,16 @@ jobs:
       - name: Node.js kur
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: '20.x'  # veya kesin sürüm için '20.18.1'
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'  # Daha tutarlı cache için
 
       - name: Bağımlılıkları kur
-        run: npm install
-
+        run: |
+          npm ci --no-audit  # npm install yerine daha güvenilir olan ci
+          npm remove undici --save  # Undici'yi kaldır (isteğe bağlı)
+          
       - name: Veriyi çek ve gönder
         run: node sendData.js
+        env:
+          NODE_OPTIONS: '--no-warnings'  # Gereksiz uyarıları gizle
