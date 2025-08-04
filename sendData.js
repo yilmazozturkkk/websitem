@@ -18,22 +18,36 @@ async function getUcusBilgileri() {
 
   // Verileri çek
   const flightsGelen = await page.evaluate(() => {
-    const rows = Array.from(document.querySelectorAll('#flightListTable tbody tr'));
-    return rows.map(row => {
-      const cols = row.querySelectorAll('td');
-      return {
-        tarih: cols[0]?.textContent.trim() || '',
-        planliSaat: cols[1]?.textContent.trim() || '',
-        tahminiSaat: cols[2]?.textContent.trim() || '',
-        havaYolu: cols[3]?.textContent.trim() || '',
-        gidecegiYer: cols[4]?.textContent.trim() || '',
-        ucusNumarasi: cols[5]?.textContent.trim() || '',
-        checkIn: cols[6]?.textContent.trim() || '',
-        aciklama: cols[7]?.textContent.trim() || '',
-        ekle: cols[8]?.textContent.trim() || ''
-      };
-    });
+  const rows = Array.from(document.querySelectorAll('#flightListTable tbody tr'));
+  return rows.map(row => {
+    const cols = row.querySelectorAll('td');
+
+    const havaYoluLink = cols[3].querySelector('a');
+    let havaYoluIsmi = '';
+    let havaYoluLogo = '';
+    if (havaYoluLink) {
+      const img = havaYoluLink.querySelector('img');
+      if (img) {
+        havaYoluIsmi = img.getAttribute('title') || '';
+        havaYoluLogo = img.getAttribute('src') ? 'https://esenbogaairport.com' + img.getAttribute('src') : '';
+      }
+    }
+
+    return {
+      tarih: cols[0]?.textContent.trim() || '',
+      planliSaat: cols[1]?.textContent.trim() || '',
+      tahminiSaat: cols[2]?.textContent.trim() || '',
+      havaYoluIsmi,
+      havaYoluLogo,
+      gidecegiYer: cols[4]?.textContent.trim() || '',
+      ucusNumarasi: cols[5]?.textContent.trim() || '',
+      checkIn: cols[6]?.textContent.trim() || '',
+      aciklama: cols[7]?.textContent.trim() || '',
+      ekle: cols[8]?.textContent.trim() || ''
+    };
   });
+});
+
 
   await browser.close();
   return flightsGelen;
