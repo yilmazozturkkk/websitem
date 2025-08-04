@@ -23,10 +23,15 @@ async function getUcusBilgileri() {
     const cols = row.querySelectorAll('td');
     if (cols.length < 9) return null;
 
-    let havaYoluLogo = '';
-      const img = cols[3].querySelector('img');
-      if (img && img.src) {
-        havaYoluLogo = img.src.startsWith('http') ? img.src : 'https://esenbogaairport.com' + img.getAttribute('src');
+     const havaYoluLink = cols[3].querySelector('a');
+      let havaYoluIsmi = '';
+      let havaYoluLogo = '';
+      if (havaYoluLink) {
+        const img = havaYoluLink.querySelector('img');
+        if (img) {
+          havaYoluIsmi = img.getAttribute('title') || '';
+          havaYoluLogo = img.getAttribute('src') ? 'https://esenbogaairport.com' + img.getAttribute('src') : '';
+        }
       }
 
     return {
