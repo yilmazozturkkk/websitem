@@ -17,7 +17,7 @@ async function getUcusBilgileri() {
   await page.waitForSelector('#flightListTable tbody tr');
 
   // Verileri çek
-  const flights = await page.evaluate(() => {
+  const flightsGelen = await page.evaluate(() => {
     const rows = Array.from(document.querySelectorAll('#flightListTable tbody tr'));
     return rows.map(row => {
       const cols = row.querySelectorAll('td');
@@ -36,7 +36,7 @@ async function getUcusBilgileri() {
   });
 
   await browser.close();
-  return flights;
+  return flightsGelen;
 }
 
 // ✅ Webhook'a gönderme kısmı
@@ -44,7 +44,7 @@ async function sendToWebhook(data) {
   const response = await fetch('https://prod-168.westeurope.logic.azure.com:443/workflows/84d44977a58842489a1bb6ce087b09e8/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=kJVn8j0cQxlwyw6J1OqMhSjWON5BrRkgT8OlLSHv5sk', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ flights: data })
+    body: JSON.stringify({ flightsGelen: data })
   });
 
   const result = await response.text();
