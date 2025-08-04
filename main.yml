@@ -1,22 +1,25 @@
-name: Scrape Esenboga Flights
+name: Uçuş Verisi Gönder
 
 on:
-  workflow_dispatch:  # elle tetikleme için
+  workflow_dispatch:
+  schedule:
+    - cron: '*/30 * * * *'  # Her 30 dakikada bir
 
 jobs:
-  scrape:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repo
+      - name: Repo'yu klonla
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
+      - name: Node.js kur
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      - name: Install dependencies
+      - name: Bağımlılıkları kur
         run: npm install
 
-      - name: Run scraping script
+      - name: Veriyi çek ve gönder
         run: node sendData.js
