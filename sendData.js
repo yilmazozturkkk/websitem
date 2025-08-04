@@ -1,39 +1,56 @@
-import fetch from "node-fetch";
-import * as cheerio from "cheerio";
+// sendData.js
+import fetch from 'node-fetch';
+import { parse } from 'node-html-parser';
 
-const url = "https://esenbogaairport.com/tr-TR/ucus-bilgileri/giden-ucuslar";
-const powerAutomateWebhook = "https://prod-168.westeurope.logic.azure.com:443/workflows/84d44977a58842489a1bb6ce087b09e8/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=kJVn8j0cQxlwyw6J1OqMhSjWON5BrRkgT8OlLSHv5sk";
+// Ayarları buraya yaz
+const SOURCE_URL = 'https://esenbogaairport.com/tr-TR/ucus-bilgileri/giden-ucuslar';
+const POWER_AUTOMATE_WEBHOOK_URL = 'https://prod-xx.westeurope.logic.azure.com:443/workflows/...'; // senin URL'in
 
-(async () => {
-  const html = await fetch(url).then(res => res.text());
-  const $ = cheerio.load(html);
+async function main() {
+  try {
+    // 1. HTML sayfasını çek
+    const response = await fetch(SOURCE_URL);
+    const html = await response.text();
 
-  const ucuslar = [];
+    // 2. HTML içinden tabloyu ayrıştır
+    const root = parse(html);
+    const table = root.querySelector('#flightListTable');
+    if (!table) throw new Error('Tablo bulunamadı');
 
-  $(".ucus-row").each((i, el) => {
-    const saat = $(el).find(".ucus-saat").text().trim();
-    const havayolu = $(el).find(".ucus-logo img").attr("alt")?.trim() || "";
-    const logo = $(el).find(".ucus-logo img").attr("src") || "";
-    const nereden = $(el).find(".ucus-nereden").text().trim();
-    const ucusNo = $(el).find(".ucus-kod").text().trim();
-    const durum = $(el).find(".ucus-durum").text().trim();
+    const rows = table.querySelectorAll('tbody tr');
+    const data = [];
 
-    ucuslar.push({
-      saat,
-      havayolu,
-      logo: `https://esenbogaairport.com${logo}`,
-      nereden,
-      ucusNo,
-      durum
+    for (let row of rows) {
+      const cells = row.querySelectorAll('td').map(cell => cell.text.trim());
+      if (cells.length >= 6) {
+        data.push({
+          saat: cells[0],
+          havayolu: cells[1],
+          ucusNo: cells[2],
+          nereden: cells[3],
+          durum: cells[4],
+          kapi: cells[5],
+        });
+      }
+    }
+
+    console.log(`Toplam ${data.length} uçuş bulundu.`);
+
+    // 3. Power Automate’e gönder
+    const postRes = await fetch(POWER_AUTOMATE_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ flights: data }),
     });
-  });
 
-  // Power Automate'e POST olarak gönder
-  await fetch(powerAutomateWebhook, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ ucuslar })
-  });
+    if (!postRes.ok) {
+      throw new Error(`Power Automate hatası: ${postRes.statusText}`);
+    }
 
-  console.log("Veriler başarıyla gönderildi.");
-})();
+    console.log('Veri başarıyla gönderildi.');
+  } catch (error) {
+    console.error('Hata:', error.message);
+  }
+}
+
+main();
