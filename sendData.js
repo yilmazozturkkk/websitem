@@ -21,6 +21,7 @@ async function getUcusBilgileri() {
   const rows = Array.from(document.querySelectorAll('#flightListTable tbody tr'));
   return rows.map(row => {
     const cols = row.querySelectorAll('td');
+    if (cols.length < 9) return null;
 
     const havaYoluLink = cols[3].querySelector('a');
     let havaYoluIsmi = '';
