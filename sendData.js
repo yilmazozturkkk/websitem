@@ -48,7 +48,7 @@ async function getUcusBilgileri() {
     };
   }).filter(item => item !== null);
   });
-});
+
 
 
   await browser.close();
