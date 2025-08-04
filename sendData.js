@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 import cheerio from "cheerio";
 
-const URL = "https://esenbogaairport.com/tr-TR/ucus-bilgileri/giden-ucuslar";
+const URL = "https://esenbogaairport.com/tr-TR/ucus-bilgileri/gelen-ucuslar";
 
 async function scrapeFlights() {
   try {
@@ -32,7 +32,7 @@ async function scrapeFlights() {
     console.log(flights);
 
     // POST isteği ile gönder (örnek bir webhook URL)
-    await fetch("https://prod-00.westeurope.logic.azure.com/...senin-webhook-url...", {
+    await fetch("https://prod-168.westeurope.logic.azure.com:443/workflows/84d44977a58842489a1bb6ce087b09e8/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=kJVn8j0cQxlwyw6J1OqMhSjWON5BrRkgT8OlLSHv5sk", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(flights),
