@@ -47,7 +47,7 @@ async function getGidenUcusBilgileri() {
       };
        }).filter(item => item !== null);
     });
-  });
+ 
 
   await browser.close();
   return flightsGiden;
