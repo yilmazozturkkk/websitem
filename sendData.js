@@ -46,6 +46,7 @@ async function getUcusBilgileri() {
       aciklama: cols[7]?.textContent.trim() || '',
       ekle: cols[8]?.textContent.trim() || ''
     };
+  }).filter(item => item !== null);
   });
 });
 
