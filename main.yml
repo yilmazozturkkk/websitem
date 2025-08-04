@@ -1,0 +1,16 @@
+steps:
+  - name: Checkout repo
+    uses: actions/checkout@v3
+
+  - name: Set up Node.js
+    uses: actions/setup-node@v3
+    with:
+      node-version: '18'
+
+  - name: Install dependencies
+    run: |
+      npm install
+      npm install node-fetch@2  # Bu satırı ekle
+
+  - name: Run script
+    run: node sendData.js
