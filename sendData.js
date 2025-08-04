@@ -8,7 +8,7 @@ async function getGidenUcusBilgileri() {
   });
 
   const page = await browser.newPage();
-  await page.goto('https://esenbogaairport.com/tr-TR/ucus-bilgileri/giden-ucuslar', {
+  await page.goto('https://esenbogaairport.com/tr-TR/ucus-bilgileri/gelen-ucuslar', {
     waitUntil: 'networkidle0',
     timeout: 0
   });
