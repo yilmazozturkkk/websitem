@@ -3,7 +3,7 @@ name: Esenboga Giden Ucus
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # Her 6 saatte bir çalışır
+    - cron: '0 */30 * * *' # Her 6 saatte bir çalışır
   workflow_dispatch: # Elle tetiklemek için
 
 jobs:
