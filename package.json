@@ -4,6 +4,7 @@
   "main": "sendData.js",
   "dependencies": {
     "axios": "^1.6.8",
+    "cheerio": "^1.0.0-rc.12",
     "node-fetch": "^2.6.1",
     "puppeteer": "^21.3.8"
   }
