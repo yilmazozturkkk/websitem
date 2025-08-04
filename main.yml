@@ -21,5 +21,8 @@ jobs:
       - name: Bağımlılıkları kur
         run: npm install
 
-      - name: Veriyi çek ve gönder
+      - name: Gelen uçuş verisini çek ve gönder
         run: node sendData.js
+
+      - name: Giden uçuş verisini çek ve gönder
+        run: node sendGidenData.js 
