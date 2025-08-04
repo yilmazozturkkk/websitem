@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import cheerio from "cheerio";
+import * as cheerio from "cheerio";
 
 const URL = "https://esenbogaairport.com/tr-TR/ucus-bilgileri/gelen-ucuslar";
 
