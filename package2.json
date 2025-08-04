@@ -1,5 +1,5 @@
 {
-  "name": "ucus-verisi-gonderici",
+  "name": "ucus-giden-verisi-gonderici",
   "version": "1.0.0",
   "main": "sendGidenData.js",
   "dependencies": {
