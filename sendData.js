@@ -1,56 +1,47 @@
-// sendData.js
-import fetch from 'node-fetch';
-import { parse } from 'node-html-parser';
+const fetch = require('node-fetch');
+const { parse } = require('node-html-parser');
 
-// Ayarları buraya yaz
-const SOURCE_URL = 'https://esenbogaairport.com/tr-TR/ucus-bilgileri/giden-ucuslar';
-const POWER_AUTOMATE_WEBHOOK_URL = 'https://prod-168.westeurope.logic.azure.com:443/workflows/84d44977a58842489a1bb6ce087b09e8/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=kJVn8j0cQxlwyw6J1OqMhSjWON5BrRkgT8OlLSHv5sk'; // senin URL'in
+// Esenboğa Giden Uçuşlar Sayfası
+const url = "https://esenbogaairport.com/tr-TR/ucus-bilgileri/giden-ucuslar";
 
-async function main() {
+// Power Automate Webhook URL'in (sen buraya kendi URL’ni koyacaksın)
+const webhookUrl = "https://prod-168.westeurope.logic.azure.com:443/workflows/84d44977a58842489a1bb6ce087b09e8/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=kJVn8j0cQxlwyw6J1OqMhSjWON5BrRkgT8OlLSHv5sk"; // 👈 kendi URL'inle değiştir
+
+async function getUcusBilgileri() {
   try {
-    // 1. HTML sayfasını çek
-    const response = await fetch(SOURCE_URL);
-    const html = await response.text();
-
-    // 2. HTML içinden tabloyu ayrıştır
+    const res = await fetch(url);
+    const html = await res.text();
     const root = parse(html);
-    const table = root.querySelector('#flightListTable');
-    if (!table) throw new Error('Tablo bulunamadı');
 
-    const rows = table.querySelectorAll('tbody tr');
-    const data = [];
+    const rows = root.querySelectorAll("table tbody tr");
+    const veriler = [];
 
-    for (let row of rows) {
-      const cells = row.querySelectorAll('td').map(cell => cell.text.trim());
-      if (cells.length >= 6) {
-        data.push({
-          saat: cells[0],
-          havayolu: cells[1],
-          ucusNo: cells[2],
-          nereden: cells[3],
-          durum: cells[4],
-          kapi: cells[5],
+    rows.forEach(row => {
+      const cols = row.querySelectorAll("td");
+      if (cols.length > 0) {
+        veriler.push({
+          saat: cols[0].text.trim(),
+          havayolu: cols[1].text.trim(),
+          ucusNo: cols[2].text.trim(),
+          hedef: cols[3].text.trim(),
+          durum: cols[4].text.trim(),
         });
       }
-    }
-
-    console.log(`Toplam ${data.length} uçuş bulundu.`);
-
-    // 3. Power Automate’e gönder
-    const postRes = await fetch(POWER_AUTOMATE_WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ flights: data }),
     });
 
-    if (!postRes.ok) {
-      throw new Error(`Power Automate hatası: ${postRes.statusText}`);
-    }
+    console.log("Veriler:", veriler);
 
-    console.log('Veri başarıyla gönderildi.');
-  } catch (error) {
-    console.error('Hata:', error.message);
+    // Power Automate'e gönder
+    const response = await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ucuslar: veriler }),
+    });
+
+    console.log("Power Automate yanıtı:", response.status);
+  } catch (err) {
+    console.error("Hata:", err);
   }
 }
 
-main();
+getUcusBilgileri();
